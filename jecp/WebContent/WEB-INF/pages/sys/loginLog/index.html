@@ -1,0 +1,114 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var datagrid;
+	$(function() {
+		datagrid = $('#form_datagrid').datagrid({
+			url : '${root!}/sys/loginLog/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [ 20, 50, 100 ],
+			fit : true,
+			fitColumns : true,
+			singleSelect:true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'ID',
+			sortOrder : 'desc',
+		/*	frozenColumns : [ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value, row, index) {
+					return row.ID;
+				}
+			}] ],*/
+			columns : [ [ {
+			title : '编号',
+				field : 'ID',
+				width : 150,
+				hidden:true
+			} ,{
+				field:'USERNO',
+				title:'员工编号',
+				sortable : true
+			} ,{
+				field:'FULLNAME',
+				title:'姓名'
+			} ,{
+				field:'CNAME',
+				title:'部门',
+				sortable : true
+			} ,{
+				field:'IP',
+				title:'IP',
+				sortable : true
+			} ,{
+				field:'LOGINTIME',
+				title:'登录时间',
+				sortable : true
+			} ,{
+				field:'LOGOUTTIME',
+				title:'退出时间',
+				sortable : true
+			}] ],
+			toolbar:[{
+				text:'删除',
+				iconCls:'icon-remove',
+				handler:function() {
+					$.messager.confirm('询问','您确定要删除<b>3</b>个月前的数据？',function(b) {
+						if (b) {
+							$.ajax({url:'/sys/loginLog/del',dataType:'json',success:function(r){
+								if (r.success) {
+									datagrid.datagrid('load', {});
+									$.messager.show({
+										msg:r.msg,
+										title:'提示'
+									});
+								} else {
+									$.messager.alert("操作错误",r.msg,'error');
+								}
+							}});
+						}
+				 });
+				}
+			}]
+		});
+	});
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="north" border="false" title="搜索条件" collapsed="false"
+		style="height: 60px; overflow:hidden;" align="left">
+		<form id="searchForm">
+			<div  class="tableForm datagrid-toolbar" style="height: 100%;width:auto;">
+		   <table class="tableForm datagrid-toolbar" style="height: 100%;width:auto;">
+				<tr>
+					<td>编号<input name="userno" style="width: 120px;"/></td>
+			   		<td>姓名<input name="fullname" style="width: 120px;"/></td>
+			   		<td>IP<input name="ip" style="width: 120px;"/></td>
+					<td>登录时间</td>
+					<td><input name="startDate"class="easyui-datebox" >-<input name="endDate"class="easyui-datebox" > </td>
+					<td><a href="javascript:void(0);" class="easyui-linkbutton"
+						iconCls="icon-search" onclick="_search();">查询</a><a
+						href="javascript:void(0);" class="easyui-linkbutton"
+						onclick="cleanSearch();" title="重置查询条件">取消</a></td>
+				</tr>
+			</table>
+			</div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="form_datagrid"></table>
+	</div>
+</@layout>

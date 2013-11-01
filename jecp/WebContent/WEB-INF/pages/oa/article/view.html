@@ -1,0 +1,21 @@
+<table class="tableForm tableCss">
+<tr>
+<th>标题</th>
+<td colspan="3">${po.title!}</td>
+</tr>
+<tr>
+<th>文章分类</th>
+<td colspan="3"><input style="width:130px;" class="easyui-combotree" id="ACTCATEID" readonly="readonly" name="ACTCATEID" value="${(po.actcateid!)!}"
+data-options="required:true,url:'${root!}/oa/articleCate/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto'"></td>
+</tr>
+<tr>
+<th>内容</th>
+<td colspan="3">
+${po.content!}
+</td>
+</tr>
+<tr>
+<th>创建时间</th><td>${po.ctime!}</td>
+<th>修改时间</th><td>${po.uptime!}</td>
+</tr>
+</table>

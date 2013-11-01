@@ -1,0 +1,44 @@
+body{margin: 0px;padding:0px;}
+.tableForm {border-spacing:0px;border-collapse: separate;width:100%;}
+.tableForm th {text-align: right;width:120px;}
+.tableForm th font{float:left;}
+.tableForm td {}
+.tableCss {border-left: 1px solid #dbdbdb;border-top: 1px solid #dbdbdb;}
+.tableCss th {border-right: 1px solid #dbdbdb;border-bottom: 1px solid #dbdbdb;text-align:right;padding: 6px;}
+.tableCss td {border-right: 1px solid #dbdbdb;border-bottom: 1px solid #dbdbdb;padding: 6px;}
+
+.tableFormUL,.tableFormUL li{list-style:none;float:left;margin:0px;padding:0px;}
+.tableFormUL li{padding-left:5px;vertical-align:baseline;}
+
+.logo {background: url('./images/toplogo.png') no-repeat;}
+.info {color: #8F5700;padding: 20px;}
+.tip {width:24px;height:16px;float:left;}
+.inputread{background-color: #EFEFEF;}
+
+/************限制文字显示长度   ************/
+.limit { display : block;/*定义为块级*****************/overflow :hidden;/*超出的部分隐藏起来。********/ white-space : nowrap;		/*不显示的地方用省略号...代替**/ text-overflow : ellipsis;		/* 支持 IE *****************/-o-text-overflow : ellipsis;/* 支持 Opera **************/color:#022A4C; }
+
+/*width*/
+.w5 { width:5px; display:inline-block; }
+.w10 { width:10px; display:inline-block; }
+.w15 { width:15px; display:inline-block; }
+.w20 { width:20px; display:inline-block; }
+.w30 { width:30px; display:inline-block; }
+.w40 { width:40px; display:inline-block; }
+.w50 { width:50px; display:inline-block; }
+.w60 { width:60px; display:inline-block; }
+.w70 { width:70px; display:inline-block; }
+.w80 { width:80px; display:inline-block; }
+.w90 { width:90px; display:inline-block; }
+.w100 { width:100px; display:inline-block; }
+.w150 { width:150px; display:inline-block; }
+.w200 { width:200px; display:inline-block; }
+.w250 { width:250px; display:inline-block; }
+.w300 { width:300px; display:inline-block; }
+.w400 { width:400px; display:inline-block; }
+.w500 { width:500px; display:inline-block; }
+
+a{text-decoration:none;}
+.error{color:red;padding:3px 0px 3px 20px;background:url("img/delete.png") 0 center no-repeat;}
+/**日历*/
+.rilitap{background: url('img/tap.png') no-repeat; width:143px;height: 158px;}

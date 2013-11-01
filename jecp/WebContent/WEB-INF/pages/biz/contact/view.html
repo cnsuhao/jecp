@@ -1,0 +1,24 @@
+	<div id="tt" class="easyui-tabs" style="width: 786px; height: 450px;">
+		<div title="基本信息" style="padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th><font color=red>*</font>标题</th>
+					<td colspan="3">${(po.title)!}</td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>开会时间</th>
+					<td>${(po.starttime)!(now?string('yyyy-MM-dd'))} 至 ${(po.endtime)!} </td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>开会内容</th>
+					<td colspan="3">${(po.content)!}</td>
+				</tr>
+			</table>
+		</div>
+		<#if shareList??>
+		<div title="与会人员" style="overflow: auto; padding:5px;">
+		<#--人员组织-->
+			<#list shareList as p>${(p.fullname)!}(${(p.userno)!}-${(p.pname)!})，&nbsp;</#list>
+		</div>
+		</#if>
+	</div>

@@ -1,0 +1,197 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var datagrid;
+	$(function() {
+		datagrid = $('#form_datagrid').datagrid({
+			url : '${root!}/oa/gglan/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [ 20, 50, 100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			frozenColumns : [ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value) {
+					return row.ID;
+				}
+			} ,{
+					title : '名称',
+					field : 'NAME',
+					width : 150,
+					editor : {type : 'validatebox',options : {required : true}}
+			} ,{
+				title : '描述',
+				field : 'DESCP',
+				width : 150,
+				editor : {type : 'text'}
+				} ] ],
+			toolbar : [ {
+				text : '增加',
+				iconCls : 'icon-add',
+				handler : function() {
+					add();
+				}
+			}, '-', {
+				text : '删除',
+				iconCls : 'icon-remove',
+				handler : function() {
+					del();
+				}
+			}, '-', {
+				text : '保存',
+				iconCls : 'icon-save',
+				handler : function() {
+					if (editRow != undefined) {
+						datagrid.datagrid('endEdit', editRow);
+					}
+				}
+			}, '-', {
+				text : '取消编辑',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+					datagrid.datagrid('rejectChanges');
+					editRow = undefined;
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ],
+			onDblClickRow : function(rowIndex, rowData) {
+				if (editRow != undefined) {
+					datagrid.datagrid('endEdit', editRow);
+				}
+
+				if (editRow == undefined) {
+					datagrid.datagrid('beginEdit', rowIndex);
+					editRow = rowIndex;
+					datagrid.datagrid('unselectAll');
+				}
+			},
+			onAfterEdit : function(rowIndex, rowData, changes) {
+				var inserted = datagrid.datagrid('getChanges', 'inserted');
+				var updated = datagrid.datagrid('getChanges', 'updated');
+				if (inserted.length < 1 && updated.length < 1) {
+					editRow = undefined;
+					datagrid.datagrid('unselectAll');
+					return;
+				}
+
+				var url = '';
+				if (inserted.length > 0) {
+					url = '${root!}/oa/gglan/save';
+				}
+				if (updated.length > 0) {
+					url = '${root!}/oa/gglan/save';
+				}
+
+				$.ajax({
+					url : url,
+					data : rowData,
+					dataType : 'json',
+					success : function(r) {
+						if (r.success) {
+							datagrid.datagrid('acceptChanges');
+							$.messager.show({
+								msg : r.msg,
+								title : '成功'
+							});
+							editRow = undefined;
+							datagrid.datagrid('reload');
+						} else {
+							/*datagrid.datagrid('rejectChanges');*/
+							datagrid.datagrid('beginEdit', editRow);
+							$.messager.alert('错误', r.msg, 'error');
+						}
+						datagrid.datagrid('unselectAll');
+					}
+				});
+			},
+			onRowContextMenu : function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left : e.pageX,
+					top : e.pageY
+				});
+			}
+		});
+	});
+
+	function add(){
+		if (editRow != undefined) {
+			datagrid.datagrid('endEdit', editRow);
+		}
+		if (editRow == undefined) {
+			datagrid.datagrid('unselectAll');
+			datagrid.datagrid('appendRow', {});
+			editRow = datagrid.datagrid('getRows').length - 1;
+			datagrid.datagrid('selectRow', editRow);
+			datagrid.datagrid('beginEdit', editRow);
+		}
+	}
+	function del() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url : '${root!}/oa/gglan/del',
+						data : {
+							ids : ids.join(',')
+						},
+						dataType : 'json',
+						success : function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									msg:r.msg,
+									title:'提示'
+								});
+								editRow = undefined;
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="center" border="false">
+		<table id="form_datagrid"></table>
+	</div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="add();" iconCls="icon-add">增加</div>
+		<div onclick="del();" iconCls="icon-remove">删除</div>
+	</div>
+</@layout>

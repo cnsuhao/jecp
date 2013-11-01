@@ -1,0 +1,52 @@
+<table width="100%" height="158px">
+<tr>
+<td rowspan="3" class="rilitap"  style="width:143px;height: 158px;">
+<table align="center" height="158px" width="100%" style="text-align: center;">
+<tr><td height="20" style="color:#fff;">${now?string('yyyy年MM月')}</td></tr>
+<tr><td style="font-size:72px;color: #336699;font-weight: bold;line-height:50px;padding: 15px 5px 0px 5px;">${now?string('d')}</td></tr>
+<tr><td style="color:#666666;line-height:20px;padding: 5px;">${now?string('EEE')}<br>${(lunarDate)!}</td></tr>
+</table>
+</td>
+<td>
+<table class="tableForm tableCss" height="100%" style="font-size: 18px;">
+<tr>
+<td width="100px">上班&nbsp;${(kqset.starttime)!}</td>
+<td><#if kaoqing??&&(kaoqing.qdtime)??><font<#if (kaoqing.qdtime?date('HH:mm')) gt kqset.starttime?date('HH:mm') > color='red'</#if>><b>${(kaoqing.qdtime)!}</b></font>&nbsp;&nbsp;IP:${(kaoqing.qdip)!}
+<#else><a href="#" class="easyui-linkbutton"  onclick="qian(true);"iconCls="icon-kq2">签到</a></#if></td>
+</tr>
+<tr>
+<td>下班&nbsp;${(kqset.endtime)!}</td>
+<td><#if kaoqing??&&(kaoqing.qttime)??><font<#if (kaoqing.qttime?date('HH:mm') lt kqset.endtime?date('HH:mm')) > color='red'</#if>><b>${(kaoqing.qttime)!}</b></font>&nbsp;&nbsp;IP:${(kaoqing.qtip)!}</#if>
+<a href="#" class="easyui-linkbutton" iconCls="icon-kq1"  onclick="qian(false);">签退</a></td>
+</tr>
+<tr>
+<td>备&nbsp;&nbsp;&nbsp;&nbsp;注</td>
+<td><form id="dkform"><textarea style="width:100%;" rows="2" name="remark" id="kqremark">${(kaoqing.beizhu)!}</textarea></form></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<script>
+function qian(t){
+	if($("#kqremark").val().length>50){
+		$.messager.alert("输入提示","备注字数超过了50个！<br>换行符算一个字符！","error");
+		return;
+	}
+	var url="";
+	if(t==true){<#--签到-->
+		url="qianDao";
+	}else{<#--签退-->
+		url="qianTui"
+	}
+	$.messager.confirm("考勤提示","确定要"+(t?"签到":"签退")+"？",function(r){
+		if(r)
+	$.ajax({url:"/oa/kaoqing/"+url+"/${(kqset.id)!}",data:$("#dkform").serialize(),dataType:'json',type:'POST',success:function (json){
+		if(json.success){
+			$("#p4").panel('refresh');
+		}
+		$.messager.alert('提示',json.msg,json.success?'info':'error');
+	},error:function(e){$.messager.alert('提示','网络异常！','error');}});
+	});
+}
+</script>

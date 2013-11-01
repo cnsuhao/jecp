@@ -1,0 +1,180 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var datagrid;
+	var editForm;
+	$(function() {
+		datagrid = $('#wagepay_datagrid').datagrid({
+			url : '/fa/wagepay/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [20,50,100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'ID',
+			sortOrder : 'desc',
+			columns : [ [ 
+{title:'员工编号',field:'EMPSNO',width:150},
+{title:'员工姓名',field:'EMPNAME',width:150},
+{title:'基本工资',field:'JBGZ',width:150},
+{title:'工作天数',field:'GZTS',width:150},
+{title:'岗位工资',field:'GWGZ',width:150},
+{title:'餐贴',field:'CANTIE',width:150},
+{title:'交通补贴',field:'JTBT',width:150},
+{title:'通讯补贴',field:'TXBT',width:150},
+{title:'全勤',field:'QUANQIN',width:150},
+{title:'请假',field:'QJIA',width:150},
+{title:'社保',field:'SHEBAO',width:150},
+{title:'住房公积金',field:'GJJ',width:150},
+{title:'应发工资',field:'YFGZ',width:150},
+{title:'员工基金',field:'YGJJ',width:150},
+{title:'其他',field:'QT',width:150},
+{title:'扣除合计',field:'KCHJ',width:150},
+{title:'实发工资',field:'SFGZ',width:150},
+{title:'月份',field:'YM',width:150},
+{title:'上传时间',field:'CTIME',width:150}] ],
+			toolbar : [ {
+			text : '查看',
+				iconCls : 'icon-eye',
+				handler : function() {
+					view();
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ],
+			onRowContextMenu : function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left : e.pageX,
+					top : e.pageY
+				});
+			}
+		});
+	});
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+	function view(id_,title){
+		if(id_==undefined){
+			var rows = datagrid.datagrid('getSelections');
+			if (rows.length == 1) {
+				id_=rows[0].ID;
+			}else{
+				$.messager.alert('提示', '请选择一条记录！', 'error');
+				return;
+			}
+			ooip(id_,title);
+		}
+	}
+	function ooip(id_,title){
+		$.messager.progress({text:'数据加载中....',interval:100});
+		$('#Dialog_').dialog({
+		    title: '查看-'+title,   
+		    width: 800,   
+		    top:0, 
+		    cache: false,
+		    maximizable:true,
+		    href: '/fa/wagepay/view/' + id_,   
+		    modal: true,
+		    onLoad:function(){$.messager.progress('close');},
+			buttons:[ {
+				text:"关闭",
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		});   
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="north" border="false" title="搜索条件" collapsed="false"
+		style="overflow:hidden;height:60px;" align="left">
+		<form id="searchForm">
+			<input type="hidden" name="qryField" value="EMPSNO,EMPNAME,YM">
+		   <div class="datagrid-toolbar" style="width:100%;">
+			<ul class="tableFormUL">
+				<li>员工编号<input type="text" name="EMPSNO"></li>
+				<li>员工姓名<input type="text" name="EMPNAME"></li>
+				<li>月份<input type="text" name="YM"></li>
+				<li><a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-search" onclick="_search();">查询</a>
+					<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">取消</a>
+					<span  id="upbtn"></span>
+				</li>
+			</ul>
+		  </div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="wagepay_datagrid"></table>
+	</div>
+<div id="Dialog_"></div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="view();" iconCls="icon-sys">查看</div>
+	</div>
+<script>
+$(function(){
+	var swfu_= new SWFUpload({
+		upload_url: "${root}/fa/wagepay/up",
+		post_params: {"uid": ${(Login_User.id)!}},
+		//上传文件的名称
+        file_post_name: "filedata",
+		file_size_limit : "50MB",//10MB
+		file_types : "*.*",//xls;*.xlsx",
+		file_types_description : "Excel文件",
+		file_upload_limit :10,
+		file_queue_limit : 0,
+		swfupload_preload_handler : preLoad,
+		swfupload_load_failed_handler : loadFailed,
+		file_queue_error_handler : fileQueueError,
+		file_dialog_complete_handler : fileDialogComplete,
+		upload_progress_handler : uploadProgress,
+		upload_error_handler : uploadError,
+		upload_success_handler : function(f,data){
+			eval("var json="+data+";");
+			if(json.suc==true){
+				$.messager.alert("文件上传提示","导入工资表成功！",'info');
+				datagrid.datagrid('load');
+			}else{
+				$.messager.alert("文件上传提示",data.json,'error');
+			}
+		},
+		upload_complete_handler : uploadComplete,
+		button_image_url : "${root!}/img/SmallSpyGlassWithTransperancy_17x18.png",
+		button_placeholder_id : "upbtn",
+		button_width: 80,
+		button_height: 18,
+		button_text : '<span class="button">工资表导入</span>',
+		button_text_style : '.button {font-size: 12pt; }',
+		button_text_top_padding: 0,
+		button_text_left_padding: 18,
+		//button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+		button_cursor: SWFUpload.CURSOR.HAND,
+		flash_url : swfuploaddir+"/swfupload.swf",
+		flash9_url : swfuploaddir+"/swfupload_fp9.swf",
+		custom_settings : {
+				thumbnail_height: 500,
+				thumbnail_width: 500,
+				thumbnail_quality: 100
+			},
+		debug: false
+	});
+});
+</script>
+</@layout>

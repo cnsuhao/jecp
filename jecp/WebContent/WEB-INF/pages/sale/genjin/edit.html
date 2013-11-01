@@ -1,0 +1,51 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>客户id</th>
+<td><input type="text" name="custid"class="easyui-validatebox" value="${(po.custid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>联系人id</th>
+<td><input type="text" name="contactid"class="easyui-validatebox" value="${(po.contactid)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th>联系人电话</th>
+<td><input type="text" name="phone"class="easyui-validatebox" value="${(po.phone)!}"></td>
+<th><font color=red>*</font>联系方式</th>
+<td><input type="text" name="lianxifangshi"class="easyui-validatebox" value="${(po.lianxifangshi)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>联系日期</th>
+<td><input type="text" name="lxdate"class="easyui-validatebox" value="${(po.lxdate)!}"data-options="required:true"></td>
+<th>推荐产品</th>
+<td><input type="text" name="tjproduct"class="easyui-validatebox" value="${(po.tjproduct)!}"></td>
+</tr>
+<tr>
+<th>方案</th>
+<td><input type="text" name="fangan"class="easyui-validatebox" value="${(po.fangan)!}"></td>
+<th>需要技术支持</th>
+<td><input type="text" name="needtech"class="easyui-validatebox" value="${(po.needtech)!}"></td>
+</tr>
+<tr>
+<th>联系记录</th>
+<td><input type="text" name="lxrecord"class="easyui-validatebox" value="${(po.lxrecord)!}"></td>
+<th>下次联系</th>
+<td><input type="text" name="nextlx"class="easyui-validatebox" value="${(po.nextlx)!}"></td>
+</tr>
+<tr>
+<th>跟进销售员id</th>
+<td><input type="text" name="uid"class="easyui-validatebox" value="${(po.uid)!}"></td>
+<th>创建时间</th>
+<td><input type="text" name="ctime"class="easyui-validatebox" value="${(po.ctime)!}"></td>
+</tr>
+<tr>
+<th>技术处理记录</th>
+<td><input type="text" name="jscljl"class="easyui-validatebox" value="${(po.jscljl)!}"></td>
+<th>技术员</th>
+<td><input type="text" name="jsid"class="easyui-validatebox" value="${(po.jsid)!}"></td>
+</tr>
+<tr>
+<th>技术处理时间</th>
+<td><input type="text" name="jsclsj"class="easyui-validatebox" value="${(po.jsclsj)!}"></td>
+</tr>
+</table>
+</form>

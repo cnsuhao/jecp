@@ -1,0 +1,55 @@
+<form id="editForm" name="editForm" method="post">
+	<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+	<div id="tt" class="easyui-tabs" style="width: 786px; height: 450px;">
+		<div title="基本信息" style="padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th><font color=red>*</font>标题</th>
+					<td colspan="3"><input type="text" name="title" class="easyui-validatebox" value="${(po.title)!}"data-options="required:true" style="width:99%;"></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>提醒频率</th>
+					<td><select class="easyui-combobox"  name="txpl"  data-options="panelHeight:'auto',value:${(po.txpl)!0}">
+						<option value="0">不重复</option><option value="1">30分钟重复</option><option value="2">每天重复</option><option value="3">每周重复</option><option value="4">每月重复</option>
+						</select></td>
+					<th><font color=red>*</font>提醒时间</th>
+					<td><input name="txdate" type="text" value="${(po.txdate)!}" class="easyui-datetimebox" required="required"></input></td>
+				</tr>
+				<tr>
+					<th>提醒人员</th><td><input type='checkbox' name="txbr"  value="1" <#if ((po.txbr)!0)==1>checked='checked'</#if>>本人<input type='checkbox' name="txshare"  value="1"<#if ((po.txshare)!0)==1>checked='checked'</#if>>所有共享人员</td>
+					<th>提醒方式</th><td><input type='checkbox' name="imtx"  value="1"<#if ((po.imtx)!0)==1>checked='checked'</#if>>即时通信<input type='checkbox' name="emailtx"  value="1"<#if ((po.emailtx)!0)==1>checked='checked'</#if>>Email<input type='checkbox' name="smstx"  value="1"<#if ((po.smstx)!0)==1>checked='checked'</#if>>短信</td>
+				</tr>
+				<tr>
+					<td colspan="4"><textarea name="CONTEXT" class="keditor" style="width:99%;height:200px;"required="required">${(po.context)!}</textarea></td>
+				</tr>
+			</table>
+		</div>
+		<div title="共享" style="overflow: auto; padding:5px;">
+		<#--人员组织-->
+		<#include "../../inc/_empTree.html">
+		<@empTree ckList=shareList></@empTree>
+		</div>
+		<div title="评论" style="overflow: auto; padding:5px;">
+		<table class="tableForm tableCss">
+			<#if plList??>
+				<thead>
+				<tr>
+					<th>评论人</th>
+					<th colspan="2">评论内容</th>
+				</tr>
+				</thead>
+				<tbody id="pltbody" style="overflow:scroll;height:400px;">
+				<#list plList as p>
+				<tr>
+					<td>${(p.fullname)!}(${(p.userno)!}-${(p.pname)!})<br>${((p.pltime)!)?string('yyyy-MM-dd HH:mm:ss')}</td>
+					<td colspan="2">${((p.context)!)?replace('\\n','<br>')}</td><#--plnr 评论内容 pltime 评论时间-->
+				</tr>
+				</#list>
+				</tbody>
+			</#if>
+			</table>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+</script>

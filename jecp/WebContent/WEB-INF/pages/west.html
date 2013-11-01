@@ -1,0 +1,85 @@
+<script type="text/javascript" charset="utf-8">
+	var tree;
+	var menuPanel;
+	$(function() {
+		menuPanel = $('#menuPanel').panel({
+			tools : [ {iconCls : 'icon-reload',handler : function() {tree.tree('reload');}
+			}, {iconCls : 'icon-redo',
+				handler : function() {
+					var node = tree.tree('getSelected');
+					if (node) {
+						tree.tree('expandAll', node.target);
+					} else {
+						tree.tree('expandAll');
+					}
+				}
+			}, {
+				iconCls : 'icon-undo',
+				handler : function() {
+					var node = tree.tree('getSelected');
+					if (node) {
+						tree.tree('collapseAll', node.target);
+					} else {
+						tree.tree('collapseAll');
+					}
+				}
+			} ]
+		});
+		tree = $('.easyui-tree').tree({
+			//url : '',
+			lines : true,
+			onClick : function(node) {
+				var nodeurl = node.attributes["url"].replace(' ','');
+				if (nodeurl != '' && nodeurl !='#')
+				addTab(node);
+			},
+			onDblClick : function(node) {
+				if (node.state == 'closed') {
+					$(this).tree('expand', node.target);
+				} else {
+					$(this).tree('collapse', node.target);
+				}
+			}
+		});
+	});
+</script>
+<div class="easyui-accordion" style="border:left" data-options="fit:true,border:false">
+<#--目录迭代-->
+<#macro menuTree list_ pid_>
+<#list list_ as menu1>
+<#if (menu1.pid!0)==pid_>
+<li iconCls="${menu1.icon!}">
+	<#if menu1.url??&&menu1.url!="">
+	<label onclick="addTabs('${menu1.cname!}','${menu1.url!}','${menu1.icon!}','${menu1.id!}');">${menu1.cname!}</label>
+	</#if>
+	<#if (!menu1.url??)>
+		<span>${menu1.cname }</span>
+		<ul>
+		<@menuTree list_=list_ pid_=menu1.id/>
+		</ul>
+	</#if>
+</li>
+</#if>
+</#list>
+</#macro>
+<#--权限菜单-->
+<#if menuList??>
+	<#list menuList as menu>
+		<#if menu.pid==0>
+			<div title="${menu.cname!}" iconCls="${menu.icon!}">
+			<ul class="easyui-tree tree">
+    		<@menuTree list_=menuList pid_=menu.id/>
+    		</ul>
+			</div>
+		</#if>
+	</#list>
+</#if>
+<div title="测试" iconCls="">
+	<ul class="easyui-tree tree">
+		<li>
+    	<label onclick="addTabs('highcharts','${root!}/highcharts/index.html','');">highcharts</label>
+    	</li>
+    	<li></li>
+    </ul>
+</div>
+</div>

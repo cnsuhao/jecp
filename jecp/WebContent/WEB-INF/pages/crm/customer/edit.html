@@ -1,0 +1,113 @@
+<form method="post" id="editForm" name="editForm">
+	<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+	<div id="tt" class="easyui-tabs" style="width: 786px; height: 450px;">
+		<div title="客户信息" style="padding: 5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th><font color=red>*</font>客户名称</th>
+					<td><input type="text" name="cname" class="easyui-validatebox"
+						value="${(po.cname)!}" data-options="required:true"></td>
+					<th>别名</th>
+					<td><input type="text" name="jcname"
+						class="easyui-validatebox" value="${(po.jcname)!}"
+						data-options=""></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>客户类型</th>
+					<td><input type="text" name="ctype"
+						class="easyui-validatebox easyui-combobox" value="${(po.ctype)!}"
+						data-options="required:true,url:'/crm/custtype/combobox',valueField:'ID',textField:'CNAME'"></td>
+					<th><font color=red>*</font>客户来源</th>
+					<td><input type="text" name="khly"
+						class="easyui-validatebox easyui-combobox" value="${(po.khly)!}"
+						data-options="required:true,url:'/sys/parame/combobox/KHLY',valueField:'ID',textField:'CNAME'"></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>跟进进度</th>
+					<td><input type="text" name="gzdj"
+						class="easyui-validatebox easyui-combobox" value="${(po.gzdj)!}"
+						data-options="required:true,url:'/sys/parame/combobox/GJJD',valueField:'ID',textField:'CNAME'"></td>
+					<th><font color=red>*</font>所属行业</th>
+					<td><input type="text" name="hangye"
+						class="easyui-validatebox  easyui-combobox"
+						value="${(po.hangye)!}"
+						data-options="required:true,url:'/sys/parame/combobox/HANGYE',valueField:'ID',textField:'CNAME'"></td>
+				</tr>
+				<tr>
+					<th>主营业务</th>
+					<td><input type="text" name="zybiz" value="${(po.zybiz)!}"></td>
+					<th><font color=red>*</font>省份城市</th>
+					<td><input type="text" name="province"
+						class="easyui-validatebox easyui-combobox" style="width: 80px;"
+						data-options="required:true,url:'/sys/area/combobox/0',valueField:'ID',textField:'CNAME',onSelect:function(r){$('#veditForm_city').combobox({url:'/sys/area/combobox/'+r.ID});}"
+						value="${(po.province)!}">省 
+						<input type="text"
+						id="veditForm_city" name="city"
+						class="easyui-validatebox easyui-combobox" style="width: 80px"
+						data-options="required:true,url:'/sys/area/combobox',valueField:'ID',textField:'CNAME'"
+						value="${(po.city)!}">市</td>
+				</tr>
+				<tr>
+					<th>客户服务类型</th>
+					<td><input type="text" name="khfwlx"
+						class="easyui-validatebox easyui-combobox" value="${(po.khfwlx)!}"
+						data-options="required:true,url:'/sys/parame/combobox/KHFWLX',valueField:'ID',textField:'CNAME'"></td>
+					<th>公司地址</th>
+					<td><input type="text" name="addr" class="easyui-validatebox" value="${(po.addr)!}"></td>
+				</tr>
+				<tr>
+					<th>交通路线</th>
+					<td><input type="text" name="jtlx" class="easyui-validatebox" value="${(po.jtlx)!}"></td>
+					<th>网络规模</th>
+					<td><input type="text" name="wlgm" class="easyui-validatebox" value="${(po.wlgm)!}" data-options=""></td>
+				</tr>
+				<tr>
+					<th>服务器数量</th>
+					<td><input type="text" name="fwqsl" class="easyui-validatebox"
+						value="${(po.fwqsl)!}"></td>
+					<th>公司网址</th>
+					<td><input type="text" name="website"
+						class="easyui-validatebox" value="${(po.website)!}"></td>
+				</tr>
+				<tr>
+					<th>总机电话</th>
+					<td><input type="text" name="telphone" class="easyui-validatebox" value="${(po.telphone)!}"></td>
+					<th>传真</th>
+					<td><input type="text" name="fax" class="easyui-validatebox" value="${(po.fax)!}"></td>
+				</tr>
+				<tr>
+					<th>邮编</th>
+					<td><input type="text" name="zipcode" class="easyui-validatebox" value="${(po.zipcode)!}"></td>
+					<th>email</th>
+					<td><input type="text" name="email" class="easyui-validatebox" value="${(po.email)!}"></td>
+				</tr>
+				<tr>
+					<th>开户银行</th>
+					<td><input type="text" name="khyh"
+						class="easyui-validatebox  easyui-combobox" value="${(po.khyh)!}"
+						data-options="required:true,url:'/sys/parame/combobox/KHYH',valueField:'ID',textField:'CNAME'"></td>
+					<th>授信账期</th>
+					<td><input type="text" name="sxzq" class="easyui-validatebox"
+						value="${(po.sxzq)!}"></td>
+				</tr>
+				<tr>
+					<th>银行账号</th>
+					<td><input type="text" name="bankaccout" class="easyui-validatebox" value="${(po.bankaccout)!}"></td>
+					<th>信用评价</th>
+					<td><input type="text" name="xypj" class="easyui-validatebox  easyui-combobox" value="${(po.xypj)!}" data-options="url:'/sys/parame/combobox/YYPJ',valueField:'ID',textField:'CNAME'"></td>
+				</tr>
+				<tr>
+					<th>税号</th>
+					<td><input type="text" name="taxsno" class="easyui-validatebox" value="${(po.taxsno)!}"></td>
+					<th>客户预算时间</th>
+					<td><input type="text" name="khyssj" class="easyui-validatebox" value="${(po.khyssj)!}"></td>
+				</tr>
+				<tr>
+					<th>公司简介</th>
+					<td colspan=3><textarea name="gsjj" rows="4" style="width: 100%;"">${(po.gsjj)!}"</textarea></td>
+				</tr>
+			</table>
+		</div>
+		<div title="联系人" style="padding: 5px;"></div>
+	</div>
+</form>

@@ -1,0 +1,22 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>模版标题</th>
+<td><input type="text" name="partmentid"class="easyui-validatebox" value="${(po.partmentid)!}"data-options="required:true">
+<#assign typeList=['日报','周报','月报','年报']/>
+<select name="type"class="easyui-validatebox" value="${(po.type)!}"data-options="required:true">
+<#list typeList as t>
+<option value="${(t_index)!}">${(t)!}</option>
+</#list>
+</select>
+</td>
+</tr>
+<tr>
+<th>内容</th>
+<td><textarea name="content"class="keditor" >${(po.content)!}</textarea></td>
+</tr>
+<tr>
+</tr>
+</table>
+</form>

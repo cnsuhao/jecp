@@ -1,0 +1,102 @@
+<#include "../../inc/layout.html"><@layout>
+<script>
+var editor;
+$(function(){
+	editor=KindEditor.create('.keditor', {
+		themeType : 'default',height:250,width:'100%',
+		uploadJson : '${root!}/file/up',
+		fileManagerJson : '${root!}/file/manager',
+		allowFileManager : false,
+		items : ['fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+					'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+	});
+});
+function submitForm(s){
+	var articleForm = $('#editForm').form({
+		url:'/oa/mailBox/'+s,
+		success:function(data) {
+			var json = $.parseJSON(data);
+			if (json && json.success) {
+				$.messager.alert('操作成功',json.msg,'info',function(){window.location.reload();});
+				$("#poid").val(json.obj);
+			} else {
+				$.messager.alert('操作失败',json.msg,'error');
+			}
+		}
+	});
+	editor.sync();//ajax提交时需要执行此方法
+	editor.sync();
+	articleForm.submit();
+}
+function save(){
+	submitForm('saveSet');
+}
+function del(){
+	$.messager.confirm('请确认', '您要删除当前邮箱设置？', function(r) {
+		if (r) {submitForm('delSet');}
+	});
+}
+function stop(){
+	$.messager.confirm('请确认', '您要停用当前邮箱设置？', function(r) {
+		if (r) {submitForm('stopSet');}
+	});
+}function aliv(){
+	$.messager.confirm('请确认', '您要启用当前邮箱设置？', function(r) {
+		if (r) {submitForm('alivSet');}
+	});
+}
+</script>
+</head>
+<body>
+<form method="post" id="editForm"  name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<input type="hidden" name="uid" value="${(po.uid)!}" >
+<input type="hidden" name="status" value="${(po.status)!}" >
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>昵称</th>
+<td><input type="text" name="cname" class="easyui-validatebox" value="${(po.cname)!}" data-options="required:true,validType:['length[1,30]']"></td>
+<th><font color=red>*</font>Email</th>
+<td><input type="text" name="email" class="easyui-validatebox" value="${(po.email)!}" data-options="required:true,validType:['email','length[1,100]']"</td>
+</tr>
+<tr>
+<th><font color=red>*</font>密码</th>
+<td><input type="password" name="pwd" class="easyui-validatebox" value="${(po.pwd)!}" data-options="required:true,validType:['length[1,50]']"></td>
+<th><font color=red>*</font>再输入密码</th>
+<td><input type="password" class="easyui-validatebox" value="${(po.pwd)!}" data-options="required:true,validType:['length[1,50]']"></td>
+</tr>
+<tr><td colspan="100%">
+	<div class="demo-info">
+		<div class="demo-tip icon-tip"></div>
+		<div><b>POP3和SMTP设置任选其一设置。也可多设置。</b></div>
+	</div>
+</td></tr>
+<tr>
+<th>POP3设置</th>
+<td colspan=3>服务器<input type="text" name="pop3Addr" class="easyui-validatebox" value="${(po.pop3Addr)!}" data-options="required:true,validType:['length[1,50]']">端口<input type="text" name="pop3Port" class="easyui-numberbox" value="${(po.pop3Port)!110}" data-options="required:true,min:1,max:800"></td>
+</tr>
+<th>SMTP设置</th>
+<td colspan=3>服务器<input type="text" name="smtpAddr" class="easyui-validatebox" value="${(po.smtpAddr)!}" data-options="required:true,validType:['length[1,50]']"">端口<input type="text" name="smtpPort" class="easyui-numberbox" value="${(po.smtpPort)!25}" data-options="required:true,min:1,max:800"></td>
+</tr>
+<tr>
+<th>签名</th>
+<td colspan=3>
+<textarea class="keditor" name="sign" id="sign">${(po.sign)!}</textarea>
+</td>
+</tr>
+</table>
+<div style="margin:30px 0;width:100%;text-align:center;">
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'"onclick="save()">保存</a>
+		<#if (po.id)??>
+		<#if po.status==1 > 
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-no'"onclick="stop()">停用</a>
+		<#else>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'"onclick="aliv()">启用</a>
+		</#if>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-delete'"onclick="del()">删除</a>
+		</#if>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-reload'"onclick="editForm.reset()">重置输入</a>
+</div>
+</form>
+</@layout>

@@ -1,0 +1,26 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>标题</th>
+<td><input type="text" name="TITLE" class="easyui-validatebox" value="${(po.title!)!}" data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>文章分类</th>
+<td><input style="width:130px;" class="easyui-combotree" value="${(po.doccateid!)!}" id="DOCCATEID" name="DOCCATEID"
+data-options="required:true,url:'${root!}/oa/docCate/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto'"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>内容摘要</th>
+<td>
+<textarea class="keditor easyui-validatebox" style="width:670px;height:300px;" data-options="required:true" name="summary">${(po.summary!)!}</textarea>
+</td>
+</tr>
+<tr>
+<th>附件</th>
+<td>
+<input type="hidden" value="" name="">
+<a href="${root!}/upload/file/" title="点击下载">文件名</a><a href="javascript:void();" onclick="delFile();">删除</a></td>
+</tr>
+</table>
+</form>

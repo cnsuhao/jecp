@@ -1,0 +1,371 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var yesno=['是','否'];
+	var yesnoData=[{value:1,text:'是'},{value:0,text:'否'}]
+	var fieldTypeData=[{value:'varchar',text:'字符串'},{value:'smallint',text:'短整型'},{value:'int',text:'整型'}
+	                   ,{value:'double',text:'双精度'},{value:'float',text:'浮点型'},{value:'decimal(19,2)',text:'decimal(19,2)'}
+	                   ,{value:'year',text:'年'},{value:'time',text:'时间'}
+	                   ,{value:'date',text:'日期'},{value:'datetime',text:'日期时间'},{value:'timestamp',text:'时间戳'}
+	                   ,{value:'bigint',text:'长整型'},{value:'bit',text:'布尔型'},{value:'blob',text:'二进制'},{value:'longblob',text:'长二进制'}
+	                   ,{value:'text',text:'文本'},{value:'longtext',text:'长文本'}];
+	var validType=[];
+	var validTypeData=[];
+	var datagrid;
+	$(function(){
+		datagrid = $('#form_datagrid').datagrid({
+			url : '${root!}/sys/formField/dataGrid/${tableId!}',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [ 20, 50, 100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'ID',
+			sortOrder : 'desc',
+			frozenColumns : [ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value, row, index) {
+					return row.ID;
+				}
+			}] ],
+			columns : [ [ {
+				title : '编号',
+				field : 'ID',
+				hidden:true
+			}  ,{
+				field:'FIELDNAME',
+				title:'字段名',
+				sortable : true,
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			} ,{
+				field:'FIELDDESC',
+				title:'字段描述',
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			} ,{
+				field:'FIELDTITLE',
+				title:'字段提示',
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			} ,{
+				field:'FTYPE',
+				title:'字段类型',
+				sortable : true,
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:fieldTypeData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return v;
+				}
+			} ,{
+				field:'FLEN',
+				title:'字段长度',
+				editor : {
+					type : 'numberbox',
+					options : {
+						required : true
+					}
+				}
+			}  ,{
+				field:'CTRLTYPE',
+				title:'控件类型',
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			},{
+				field:'VALIT',
+				title:'验证规则',
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:validTypeData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return validType[v];
+				}
+			} ,{
+				field:'REQUI',
+				title:'必填',
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:yesnoData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return yesno[v];
+				}
+			} ,{
+				field:'SHOWINLIST',
+				title:'显示到列表',
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:yesnoData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return yesno[v];
+				}
+			} ,{
+				field:'SHOWINQRY',
+				title:'作为查询条件',
+				sortable : true,
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:yesnoData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return yesno[v];
+				}
+			} ,{
+				field:'WFATTR',
+				title:'是否工作流变量',
+				sortable : true,
+				hidden:true,
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:yesnoData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return yesno[v];
+				}
+			},{
+				field:'SORTNUM',
+				title:'字段排序',
+				editor:{
+					type:'numberbox',
+					options:{
+						min:0,
+						max:999,
+						required:true
+					}
+				}
+			}
+			 ] ],
+			toolbar : [ {
+				text : '增加',
+				iconCls : 'icon-add',
+				handler : function() {
+					add();
+				}
+			}, '-', {
+				text : '删除',
+				iconCls : 'icon-remove',
+				handler : function() {
+					del();
+				}
+			}, '-', {
+				text : '编辑字段',
+				iconCls : 'icon-edit',
+				handler : function() {
+					edit();
+				}
+			}, '-', {
+				text : '生成代码',
+				iconCls : 'icon-gole',
+				handler : function() {
+					gCode();
+				}
+			}, '-', {
+				text : '保存',
+				iconCls : 'icon-save',
+				handler : function() {
+					if (editRow != undefined) {
+						datagrid.datagrid('endEdit', editRow);
+					}
+				}
+			}, '-', {
+				text : '取消编辑',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+					datagrid.datagrid('rejectChanges');
+					editRow = undefined;
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ],
+			onDblClickRow : function(rowIndex, rowData) {
+				if (editRow != undefined) {
+					datagrid.datagrid('endEdit', editRow);
+				}
+
+				if (editRow == undefined) {
+					datagrid.datagrid('beginEdit', rowIndex);
+					editRow = rowIndex;
+					datagrid.datagrid('unselectAll');
+				}
+			},
+			onAfterEdit : function(rowIndex, rowData, changes) {
+				var inserted = datagrid.datagrid('getChanges', 'inserted');
+				var updated = datagrid.datagrid('getChanges', 'updated');
+				if (inserted.length < 1 && updated.length < 1) {
+					editRow = undefined;
+					datagrid.datagrid('unselectAll');
+					return;
+				}
+				var url = '';
+				if (inserted.length > 0) {
+					url = '${root!}/sys/formField/save?FMID=${tableId!}';
+				}
+				if (updated.length > 0) {
+					url = '${root!}/sys/formField/save?FMID=${tableId!}';
+				}
+				$.ajax({
+					url : url,
+					data : rowData,
+					dataType : 'json',
+					success : function(r) {
+						if (r.success) {
+							datagrid.datagrid('acceptChanges');
+							$.messager.show({
+								msg : r.msg,
+								title : '成功'
+							});
+							editRow = undefined;
+							datagrid.datagrid('reload');
+						} else {
+							/*datagrid.datagrid('rejectChanges');*/
+							datagrid.datagrid('beginEdit', editRow);
+							$.messager.alert('错误', r.msg, 'error');
+						}
+						datagrid.datagrid('unselectAll');
+					}
+				});
+			},
+			onRowContextMenu : function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left : e.pageX,
+					top : e.pageY
+				});
+			}
+		});
+	});
+
+	function add(){
+		if (editRow != undefined) {
+			datagrid.datagrid('endEdit', editRow);
+		}
+		if (editRow == undefined) {
+			datagrid.datagrid('unselectAll');
+			datagrid.datagrid('appendRow', {});
+			editRow = datagrid.datagrid('getRows').length - 1;
+			datagrid.datagrid('selectRow', editRow);
+			datagrid.datagrid('beginEdit', editRow);
+		}
+	}
+	function del() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].cid);
+					}
+					$.ajax({
+						url : '${root!}/sys/formField/del',
+						data : {
+							ids : ids.join(',')
+						},
+						dataType : 'json',
+						success : function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									msg:r.msg,
+									title:'提示'
+								});
+								editRow = undefined;
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="center" border="false">
+		<table id="form_datagrid"></table>
+	</div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="add();" iconCls="icon-add">增加</div>
+		<div onclick="del();" iconCls="icon-remove">删除</div>
+	</div>
+</@layout>

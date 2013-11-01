@@ -1,0 +1,27 @@
+<#macro empTree  ckList="" treeId="_empTree">
+<script>
+		$(function(){
+			$('#${(treeId)!}').tree({
+			    url: '/hr/employee/combotree/?ck=${(ckList)!}',checkbox:true,onlyLeafCheck:true
+			}); 
+		});
+		function getChecked(){
+			var nodes = $('#${(treeId)!}').tree('getChecked');
+			var s = '';
+			for(var i=0; i<nodes.length; i++){
+				if (s != '') s += ',';
+				s += nodes[i].id;
+			}
+			return s;
+		}
+		function collapseAll(){
+			$('#${(treeId)!}').tree('collapseAll');
+		}
+		function expandAll(){
+			$('#${(treeId)!}').tree('expandAll');
+		}
+		</script>
+		<a href="#" class="easyui-linkbutton" onclick="collapseAll()">折叠</a>
+		<a href="#" class="easyui-linkbutton" onclick="expandAll()">展开</a>
+		<ul id="${(treeId)!}"></ul>
+</#macro>

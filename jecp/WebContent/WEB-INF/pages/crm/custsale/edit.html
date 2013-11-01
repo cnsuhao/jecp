@@ -1,0 +1,15 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>销售员id</th>
+<td><input type="text" name="uid"class="easyui-validatebox" value="${(po.uid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>分配时间</th>
+<td><input type="text" name="ctime"class="easyui-validatebox" value="${(po.ctime)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>客户id</th>
+<td><input type="text" name="custid"class="easyui-validatebox" value="${(po.custid)!}"data-options="required:true"></td>
+</tr>
+</table>
+</form>

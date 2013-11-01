@@ -1,0 +1,55 @@
+<#include "inc/layout_all.html">
+<@layout title="${cfg.cmpname.value!}" body=false>
+<style>
+body {background-repeat: repeat-x;background-image: url(./img/pick_bg.jpg);}
+</style>
+<script type="text/javascript">
+window.history.go(2);
+var TD=new Date('${nowtime?string('yyyy-MM-dd HH:mm:ss')}');
+var h=TD.getHours();
+var m=TD.getMinutes();
+var s=TD.getSeconds()+2;
+var clock;
+function filltime(){
+		var hstr=h;
+		var istr=m;
+		var is=s++;
+		if(is>59){m++;s=0;}
+		if(m>59){h++;m=0;}
+		if(h>24){h=0;}
+	    if (h < 10) {hstr="0"+h};
+		if (m < 10) {istr="0"+m};
+		if (s < 10) {is="0"+s};
+		clock.html(hstr+":"+istr+":"+is);
+}
+$(function(){
+	$.messager.show({title:'登录提示',msg:'欢迎登录系统！<br>上次登录时间：${Login_User.logintime?string('yyyy-MM-dd HH:mm:ss')}<br>IP:${Login_User.ip!}'});
+	clock=$("#clock");
+	setInterval(filltime,1000);
+});
+function showDialog(url,title,width){
+	$("#Dialog_").dialog({href:url,title:title,   
+	    width:width,cache: false,maximizable:true,collapsible:true,resizable:true,top:60,
+	    onLoad:function(){$.messager.progress('close');},
+		buttons:[ {
+			text:"关闭",
+			handler:function() {
+				$('#Dialog_').dialog('close');
+			}
+		}]
+	  });
+}
+</script>
+</head>
+<body id="indexLayout" class="easyui-layout">
+	<div style="position: absolute; right: 0px;top: 0px;font-weight: bold;color: #777;font-size: 11px;">当前用户：<font color=red>${(Login_User.fullname)!}</font> 部门：${(Login_User.partname)!} 系统时间：${nowtime?string('yyyy年MM月dd日 EEE')}&nbsp;<span id='clock'></span></div>
+	<div region="north" class="logo" style="height:60px;padding: 1px;border:0px;overflow: hidden;" href="north"></div>
+	<div region="east" title="日历" split="true" collapsed="true" 
+	style="width:200px;overflow: hidden;" href="east"></div>
+	<div region="center" title="" style="overflow: hidden;" href="center"></div>
+	<div region="west" title="功能导航" split="true" style="width:190px;overflow: hidden;" href="west"></div>
+<#--<div region="south" style="height:20px;overflow: hidden;border:0px;" href="south"></div> -->
+	<input type="hidden" id="top" name="top"/>
+	<div id="Dialog_"></div>
+</body>
+</@layout>

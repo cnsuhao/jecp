@@ -1,0 +1,51 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>用户id</th>
+<td><input type="text" name="uid"class="easyui-validatebox" value="${(po.uid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>签到时间</th>
+<td><input type="text" name="qdtime"class="easyui-validatebox" value="${(po.qdtime)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>签退时间</th>
+<td><input type="text" name="qttime"class="easyui-validatebox" value="${(po.qttime)!}"></td>
+<th><font color=red>*</font>考勤日期</th>
+<td><input type="text" name="kqrq"class="easyui-validatebox" value="${(po.kqrq)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>月份</th>
+<td><input type="text" name="month"class="easyui-validatebox" value="${(po.month)!}"data-options="required:true"></td>
+<th><font color=red>*</font>日</th>
+<td><input type="text" name="day"class="easyui-validatebox" value="${(po.day)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>年</th>
+<td><input type="text" name="year"class="easyui-validatebox" value="${(po.year)!}"data-options="required:true"></td>
+<th><font color=red>*</font>签到ip</th>
+<td><input type="text" name="qdip"class="easyui-validatebox" value="${(po.qdip)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>签退IP</th>
+<td><input type="text" name="qtip"class="easyui-validatebox" value="${(po.qtip)!}"></td>
+<th><font color=red>*</font>是否有效</th>
+<td><input type="text" name="legal"class="easyui-validatebox" value="${(po.legal)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>补签到时间</th>
+<td><input type="text" name="qdtime1"class="easyui-validatebox" value="${(po.qdtime1)!}"></td>
+<th><font color=red>*</font>补签退时间</th>
+<td><input type="text" name="qttime1"class="easyui-validatebox" value="${(po.qttime1)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>补签说明</th>
+<td><input type="text" name="remark"class="easyui-validatebox" value="${(po.remark)!}"></td>
+<th><font color=red>*</font>补签人</th>
+<td><input type="text" name="bquid"class="easyui-validatebox" value="${(po.bquid)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>签到备注</th>
+<td><input type="text" name="beizhu"class="easyui-validatebox" value="${(po.beizhu)!}"></td>
+</tr>
+</table>
+</form>

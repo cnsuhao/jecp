@@ -1,0 +1,51 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>客户id</th>
+<td><input type="text" name="custid"class="easyui-validatebox" value="${(po.custid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>联系人id</th>
+<td><input type="text" name="contactid"class="easyui-validatebox" value="${(po.contactid)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th>员工id</th>
+<td><input type="text" name="uid"class="easyui-validatebox" value="${(po.uid)!}"></td>
+<th><font color=red>*</font>主题</th>
+<td><input type="text" name="subject"class="easyui-validatebox" value="${(po.subject)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>日程类型</th>
+<td><input type="text" name="rclx"class="easyui-validatebox" value="${(po.rclx)!}"data-options="required:true"></td>
+<th>具体开始日期</th>
+<td><input type="text" name="startdate"class="easyui-validatebox" value="${(po.startdate)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>结束时间</th>
+<td><input type="text" name="endtime"class="easyui-validatebox" value="${(po.endtime)!}"data-options="required:true"></td>
+<th><font color=red>*</font>审核状态</th>
+<td><input type="text" name="stat"class="easyui-validatebox" value="${(po.stat)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th>进展</th>
+<td><input type="text" name="jinzhan"class="easyui-validatebox" value="${(po.jinzhan)!}"></td>
+<th><font color=red>*</font>审核状态</th>
+<td><input type="text" name="type"class="easyui-validatebox" value="${(po.type)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th>审核人</th>
+<td><input type="text" name="shenhren"class="easyui-validatebox" value="${(po.shenhren)!}"></td>
+<th>审核时间</th>
+<td><input type="text" name="shtime"class="easyui-validatebox" value="${(po.shtime)!}"></td>
+</tr>
+<tr>
+<th>内容</th>
+<td><input type="text" name="content"class="easyui-validatebox" value="${(po.content)!}"></td>
+<th>费用</th>
+<td><input type="text" name="feiyong"class="easyui-validatebox" value="${(po.feiyong)!}"></td>
+</tr>
+<tr>
+<th>审核意见</th>
+<td><input type="text" name="shenhyj"class="easyui-validatebox" value="${(po.shenhyj)!}"></td>
+</tr>
+</table>
+</form>

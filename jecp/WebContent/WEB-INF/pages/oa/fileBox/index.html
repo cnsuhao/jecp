@@ -1,0 +1,201 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var datagrid;
+	var filetype=new Array();
+	filetype['img']='图片';
+	filetype['file']='文件';
+	filetype['media']='媒体';
+	filetype['zip']='压缩包';
+	$(function() {
+		datagrid = $('#form_datagrid').datagrid({
+			url : '${root!}/oa/fileBox/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [ 20, 50, 100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'CTIME',
+			sortOrder : 'desc',
+			frozenColumns : [ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value) {
+					return row.ID;
+				}
+			},{
+				title : '编号',
+				field : 'ID',
+				width : 150,
+				hidden:true
+			} ,{
+				title : '文件名',
+				field : 'FILENAME',
+				width : 150,
+				formatter:function(val,r){
+					var v=r.FILEPATH;
+					if(r.FTYPE=='img')
+						return "<span url='/upload/"+v+"' style='cursor:pointer;color:blue;'  onmouseover='hoverShow(this);'onmouseout='$(\"#imgShow\").hide();'>"+val+"</span>";
+					else
+						return "<span style='cursor:pointer;color:blue;'>"+v+"</span>";
+				}
+			} ,{
+				title : '大小（MB）',
+				field : 'SIZE',
+				width : 150
+			} ,{
+				title : '文件类型',
+				field : 'FTYPE',sortable : true,
+				width : 150,formatter:function(v){return filetype[v];}
+			} ,{
+				title : '上传时间',
+				field : 'CTIME',
+				width : 150,
+				sortable : true
+				} ] ],
+			toolbar : [ {
+				text : '删除',
+				iconCls : 'icon-remove',
+				handler : function() {
+					del();
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ]
+		});
+	});
+
+	function del() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url : '${root!}/oa/fileBox/del',
+						data : {
+							ids : ids.join(',')
+						},
+						dataType : 'json',
+						success : function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									msg:r.msg,
+									title:'提示'
+								});
+								editRow = undefined;
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+	function hoverShow(a_){
+		$("#imgShow>img").attr("src",$(a_).attr('url')).height();
+		$("#imgShow").css("left",10+event.x).css("top",event.y-50).show();
+		$("#imgShow>img").attr("src",$(a_).attr('url'));
+	}
+</script>
+</head>
+<body class="easyui-layout">
+<div id="imgShow"  style="position: absolute;display:none;border: 4px #ccc solid ;z-index:10;background-color:#fff;padding:5px;"><img src="" width="150px"></div>
+	<div region="north" border="false" title="搜索条件" collapsed="false"
+		style="height: 60px; overflow:hidden;" align="left">
+		<div class="tableForm datagrid-toolbar" >
+		<form id="searchForm">
+			<table style="height: 100%;width:auto;">
+				<tr>
+					<td>开始时间</td>
+					<td><input name="startDate"class="easyui-datebox" >-<input name="endDate"class="easyui-datebox" > </td>
+					<td><a href="javascript:void(0);" class="easyui-linkbutton"
+						iconCls="icon-search" onclick="_search();">查询</a><a
+						href="javascript:void(0);" class="easyui-linkbutton"
+						onclick="cleanSearch();">取消</a></td>
+						<td><span  id="upbtn"></span></td>
+				</tr>
+			</table>
+		</form>
+		</div>
+	</div>
+	<div region="center" border="false">
+		<table id="form_datagrid"></table>
+	</div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="add();" iconCls="icon-add">增加</div>
+		<div onclick="del();" iconCls="icon-remove">删除</div>
+	</div>
+	<script>
+	var swfu_= new SWFUpload({
+		upload_url: "${root}/file/swfup",
+		post_params: {"uid": ${(Login_User.id)!}},
+		//上传文件的名称
+        file_post_name: "filedata",
+		file_size_limit : "102400",
+		file_types : "*.*",
+		file_types_description : "所有文件",
+		file_upload_limit :0,
+		file_queue_limit : 0,
+		swfupload_preload_handler : preLoad,
+		swfupload_load_failed_handler : loadFailed,
+		file_queue_error_handler : fileQueueError,
+		file_dialog_complete_handler : fileDialogComplete,
+		upload_progress_handler : uploadProgress,
+		upload_error_handler : uploadError,
+		upload_success_handler : function(f,data){
+			eval("var json="+data+";");
+			if(json.suc==true){
+				$.messager.alert("文件上传提示","上传成功！",'info');
+			}else{
+				$.messager.alert("文件上传提示",data.json,'error');
+			}
+		},
+		upload_complete_handler : uploadComplete,
+		button_image_url : "${root!}/img/SmallSpyGlassWithTransperancy_17x18.png",
+		button_placeholder_id : "upbtn",
+		button_width: 80,
+		button_height: 18,
+		button_text : '<span class="button">上传文件</span>',
+		button_text_style : '.button {font-size: 12pt; }',
+		button_text_top_padding: 0,
+		button_text_left_padding: 18,
+		button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+		button_cursor: SWFUpload.CURSOR.HAND,
+		flash_url : swfuploaddir+"/swfupload.swf",
+		flash9_url : swfuploaddir+"/swfupload_fp9.swf",
+		custom_settings : {
+			upload_target : "divFileProgressContainer",
+			thumbnail_height: 800,
+			thumbnail_width: 800,
+			thumbnail_quality: 100
+		},
+		debug: true
+	});
+	</script>
+</@layout>

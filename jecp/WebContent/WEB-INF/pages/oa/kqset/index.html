@@ -1,0 +1,241 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var datagrid;
+	$(function() {
+		datagrid = $('#kqset_datagrid').datagrid({
+			url : '/oa/kqset/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [20,50,100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'ID',
+			sortOrder : 'desc',
+			frozenColumns : [ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value, row, index) {
+					return row.ID;
+				}
+			}] ],
+			columns : [ [ {title : '编号',field : 'ID',width : 150,hidden:true}, 
+			              {title:'执行日期',field:'EXCTDATE',width:150},
+			              {title:'周一',field:'Z1',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'周二',field:'Z2',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'周三',field:'Z3',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'周四',field:'Z4',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'周五',field:'Z5',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'周六',field:'Z6',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'周日',field:'Z7',width:150,formatter:function(v){return v==1?"<font color='green'><b>√</b></font>":"";}},
+			              {title:'上班是时间',field:'STARTTIME',width:150},
+			              {title:'下班时间',field:'ENDTIME',width:150}] ],
+			toolbar : [ {
+			text : '查看',
+				iconCls : 'icon-eye',
+				handler : function() {
+					view();
+				}
+			}, '-', {
+				text : '增加',
+				iconCls : 'icon-add',
+				handler : function() {
+					add();
+				}
+			}, '-', {
+				text : '删除',
+				iconCls : 'icon-remove',
+				handler : function() {
+					del();
+				}
+			}, '-', {
+				text : '修改',
+				iconCls : 'icon-edit',
+				handler : function() {
+					edit();
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ],
+			onRowContextMenu : function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left : e.pageX,
+					top : e.pageY
+				});
+			}
+		});
+	});
+var editor;
+function edit() {
+var rows = datagrid.datagrid('getSelections');
+if (rows.length == 1) {
+	add(rows[0].ID);
+} else {
+	$.messager.alert('提示', '请选择一条记录！', 'error');
+	}
+}
+function add(id_) {
+	$.messager.progress({
+		text:'数据加载中....',
+		interval:100
+	});
+	$('#Dialog_').dialog({
+	    title:id_==undefined?"新增":"编辑",   
+	    cache: false,
+	    maximizable:true,
+	    resizable:true,
+	    width:800,
+	    top:0,
+	    href: '/oa/kqset/edit/'+(id_==undefined?'':id_),   
+	    modal: false,
+	    onLoad:function(){$.messager.progress('close');
+	    	try{
+	    	editor=KindEditor.create('.keditor', {
+				themeType : 'default',
+				uploadJson : '${root!}/file/up',
+				fileManagerJson : '${root!}/file/manager',
+				allowFileManager : false
+				});
+	    	}catch(e){}
+	    	
+	    	},
+		buttons:[ {
+			text:'保存',
+			iconCls:'icon-save',
+			handler:function() {
+				documentForm = $('#editForm').form({
+					url:'/oa/kqset/save',
+					success:function(data) {
+						var json = $.parseJSON(data);
+						if (json && json.success) {
+							$.messager.show({
+								title:'成功',
+								msg:json.msg
+							});
+							datagrid.datagrid('reload');
+							$("#poid").val(json.obj);
+							//$('#Dialog_').dialog('close');
+						} else {
+							$.messager.show({
+								title:'失败',
+								msg:'操作失败！'
+							});
+						}
+					}
+				});
+				if(editor!=undefined){
+					editor.sync();//ajax提交时需要执行此方法
+					editor.sync();
+				}
+				documentForm.submit();
+				}
+			},
+			{
+			text:"关闭",
+			iconCls:'icon-cancel',
+			handler:function() {
+				$('#Dialog_').dialog('close');
+			}
+		}]
+	}); 
+}
+	function del() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url : '/oa/kqset/del',
+						data : {
+							ids : ids.join(',')
+						},
+						dataType : 'json',
+						success : function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									msg:r.msg,
+									title:'提示'
+								});
+								editRow = undefined;
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+	function view(id_,title){
+		if(id_==undefined){
+			var rows = datagrid.datagrid('getSelections');
+			if (rows.length == 1) {
+				id_=rows[0].ID;
+			}else{
+				$.messager.alert('提示', '请选择一条记录！', 'error');
+				return;
+			}
+			ooip(id_,title);
+		}
+	}
+	function ooip(id_,title){
+		$.messager.progress({text:'数据加载中....',interval:100});
+		$('#Dialog_').dialog({
+		    title: '查看-'+title,   
+		    width: 800,   
+		    top:0, 
+		    cache: false,
+		    maximizable:true,
+		    href: '/oa/kqset/view/' + id_,   
+		    modal: true,
+		    onLoad:function(){$.messager.progress('close');},
+			buttons:[ {
+				text:"关闭",
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		});   
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="center" border="false">
+		<table id="kqset_datagrid"></table>
+	</div>
+<div id="Dialog_"></div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="view();" iconCls="icon-sys">查看</div>
+		<div onclick="add();" iconCls="icon-add">增加</div>
+		<div onclick="del();" iconCls="icon-remove">删除</div>
+		<div onclick="edit();" iconCls="icon-edit">编辑</div>
+	</div>
+</@layout>

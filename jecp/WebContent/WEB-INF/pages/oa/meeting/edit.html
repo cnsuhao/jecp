@@ -1,0 +1,28 @@
+<form id="editForm" name="editForm" method="post">
+	<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+	<div id="tt" class="easyui-tabs" style="width:900px; height:auto;">
+		<div title="基本信息" style="padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th><font color=red>*</font>主题</th>
+					<td colspan="3"><input type="text" name="title" class="easyui-validatebox" value="${(po.title)!}"data-options="required:true" style="width:99%;"></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>会议时间</th>
+					<td><input name="starttime"class="easyui-datetimebox" required="required" value="${(po.starttime)!(now?string('yyyy-MM-dd'))}">至<input name="endtime"class="easyui-datetimebox" value="${(po.endtime)!}"> </td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>内容</th>
+					<td colspan="3"><textarea name="content" class="keditor" style="width:100%;height:auto;"required="required">${(po.content)!}</textarea></td>
+				</tr>
+			</table>
+		</div>
+		<div title="与会人员" style="overflow: auto; padding:5px;">
+		<#--人员组织-->
+		<#include "../../inc/_empTree.html">
+		<@empTree ckList=shareList></@empTree>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+</script>

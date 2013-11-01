@@ -1,0 +1,82 @@
+<script type="text/javascript" charset="utf-8">
+	function logout(b) {
+		$.post('${root!}/logout', function() {
+			if (b) {
+				if (sy.isLessThanIe8()) {
+					window.location.href="${root!}/";
+				} else {
+					location.replace(sy.bp());
+				}
+			} else {
+				window.location.href="${root!}/";
+			}
+		});
+	}
+	var userInfoWindow;
+	function showUserInfo() {
+		userInfoWindow = $('<div/>').window({
+			width : 750,
+			height : 500,
+			title : '我的信息',
+			href : '${root!}/hr/employee/view/${(Login_User.id)!}',
+			onClose : function() {
+				$(this).window('destroy');
+			}
+		});
+	}
+	function about(){
+		$.messager.alert('关于...','loyin&copy;  <a href="http://www.loyin.net" title="龙影技术">龙影技术&copy; 版权所有</a><br>技术支持:QQ290238838','info');
+	}
+</script>
+<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"
+width="400" height="80"><param name="menu" value="false">
+<param name=movie value="title.swf"><param name="quality" value="high"><param name="wmode" value="transparent"><param name="loop" value="false" />
+<embed src="title.swf" quality=high wmode=transparent width="400" height="80" menu="false" loop="false"
+type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer">
+</embed></object>
+<div style="position: absolute; right: 0px; bottom: 0px; ">
+	<!--<a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_pfMenu" iconCls="icon-ok">更换皮肤</a> 
+	--><a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_kzmbMenu" iconCls="icon-help">控制面板</a>
+	<a href="javascript:void(0);" class="easyui-menubutton" menu="#layout_north_zxMenu" iconCls="icon-back">退出</a>
+</div>
+<div id="layout_north_pfMenu" style="width: 120px; display: none;">
+	<div onclick="sy.changeTheme('bootstrap');">bootstrap</div>
+	<div onclick="sy.changeTheme('default');">default</div>
+	<div onclick="sy.changeTheme('gray');">gray</div>
+	<div onclick="sy.changeTheme('black');">black</div>
+	<div onclick="sy.changeTheme('metro');">metro</div>
+	<#-- <div onclick="sy.changeTheme('cupertino');">cupertino</div>
+	<div onclick="sy.changeTheme('dark-hive');">dark-hive</div>
+	<div onclick="sy.changeTheme('pepper-grinder');">pepper-grinder</div>
+	<div onclick="sy.changeTheme('sunny');">sunny</div> -->
+</div>
+<div id="layout_north_kzmbMenu" style="width: 100px; display: none;">
+	<div onclick="showUserInfo();">常用操作</div>
+	<div onclick="showNetHelp();">在线帮助</div>
+	<div iconCls="" onclick="$.cookie('portal-state', null);$.messager.show({title:'提示',msg:'初始化成功！请刷新页面！'});" class="easyui-linkbutton">恢复初始portal顺序</div>
+	<div onclick="showUserInfo();">个人信息</div>
+	<div onclick="setPwd();">修改密码</div>
+	<div onclick="about();">关于...</div>
+	<div class="menu-sep"></div>
+	<div>
+		<span>更换主题</span>
+		<div style="width: 120px;">
+			<div onclick="sy.changeTheme('bootstrap');">bootstrap</div>
+			<div onclick="sy.changeTheme('default');">default</div>
+			<div onclick="sy.changeTheme('gray');">gray</div>
+			<div onclick="sy.changeTheme('black');">black</div>
+			<div onclick="sy.changeTheme('metro');">metro</div>
+			<#-- <div onclick="sy.changeTheme('cupertino');">cupertino</div>
+			<div onclick="sy.changeTheme('dark-hive');">dark-hive</div>
+			<div onclick="sy.changeTheme('pepper-grinder');">pepper-grinder</div>
+			<div onclick="sy.changeTheme('sunny');">sunny</div> -->
+		</div>
+	</div>
+</div>
+<div id="layout_north_zxMenu" style="width: 100px; display: none;">
+<#-- 	<div onclick="logout(true);">锁定窗口</div> -->
+<#-- 	<div class="menu-sep"></div> -->
+<#-- 	<div onclick="logout();">切换用户</div> -->
+	<div onclick="if(confirm('确定要退出系统？'))logout(true);">退出系统</div>
+</div>

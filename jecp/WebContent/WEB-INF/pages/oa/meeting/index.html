@@ -1,0 +1,366 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var searchForm;
+	var searchForm2;
+	var datagrid;
+	var datagrid2;
+	var articleForm;
+	var txpl=['<font color=red>未发布</font>','已发布','<font color=green>归档</font>'];
+	var cols=[ [ {title : '标题',field : 'TITLE',width:200,formatter : function(v,row) {return "<a href=\"javascript:view("+row.ID+",'"+v+"');\" title='"+v+"'>"+v+"</a>";}
+					},{field:'STAT',title:'状态',width:200,sortable : true,formatter : function(v) {return txpl[v];}
+					},{field:'FBTIME',title:'发布时间',sortable : true,width:200
+					},{field:'STARTTIME',title:'开始时间',sortable : true,width:200
+					},{field:'ENDTIME',title:'结束时间',sortable : true,width:200
+					},{	field:'FULLNAME',title:'发布人',width:200
+					},{field:'GUIDANGREN',title:'归档人',width:200
+					},{field:'GDTIME',title:'归档时间',sortable : true,width:200
+					}] ];
+	$(function() {
+		$("#meeting_tabs").tabs({
+			onSelect:function(title,idx){
+				$("#meeting_tabs").tabs("resize");
+				switch(idx){
+				case 0:
+					$("#datagrid").show();
+					break;
+				case 1:
+					$("#datagrid_2").show();
+					break;
+				}
+			}
+		});
+		//查询列表	
+		searchForm = $('#searchForm').form();
+		datagrid = $('#datagrid').datagrid({
+			url:'/oa/meeting/dataGrid',
+			pagination:true,
+			pagePosition:'bottom',
+			rownumbers:true,
+			pageSize:20,
+			pageList:[ 20, 50, 100 ],
+			fit:true,
+			fitColumns:true,singleSelect:false,
+			nowrap:true,
+			border:false,
+			idField:'ID',
+			sortName:'',
+			sortOrder:'',
+			columns:cols,
+			toolbar:[
+			{
+				text:'查看',
+				iconCls:'icon-eye',
+				handler:function() {
+					view();
+				}
+			}, '-', {
+				text:'归档',
+				iconCls:'icon-edit',
+				handler:function() {
+					gd();
+				}
+			}, '-',
+			{
+				text:'取消选中',
+				iconCls:'icon-undo',
+				handler:function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ]
+		});
+		searchForm2 = $('#searchForm_2').form();
+		datagrid2 = $('#datagrid_2').datagrid({
+			url:'/oa/meeting/dataGrid2',
+			pagination:true,
+			pagePosition:'bottom',
+			rownumbers:true,
+			pageSize:20,
+			pageList:[ 20, 50, 100 ],
+			fit:true,
+			fitColumns:true,singleSelect:false,
+			nowrap:true,
+			border:false,
+			idField:'ID',
+			sortName:'',
+			sortOrder:'',
+			columns:cols,
+			toolbar:[
+						{
+							text:'查看',
+							iconCls:'icon-eye',
+							handler:function() {
+								view();
+							}
+						},{
+							text:'增加',
+							iconCls:'icon-add',
+							handler:function() {
+								add2();
+							}
+						}, '-',
+						{
+							text:'删除',
+							iconCls:'icon-remove',
+							handler:function() {
+								del2();
+							}
+						}, '-', {
+							text:'修改',
+							iconCls:'icon-edit',
+							handler:function() {
+								edit2();
+							}
+						}, '-', {
+							text:'发布',
+							iconCls:'icon-edit',
+							handler:function() {
+								var rows = datagrid2.datagrid('getSelections');
+								if (rows.length>0) {
+									$.messager.confirm('请确认', '您要发布当前所选会议？', function(r) {
+										if (r) {
+											var ids=[];
+											for ( var i = 0; i < rows.length; i++) {
+												ids.push(rows[i].ID);
+											}
+											$.ajax({
+												url:'/oa/meeting/publish',
+												data:{
+													ids:ids.join(',')
+												},
+												dataType:'json',
+												success:function(r) {
+													if (r.success) {
+														datagrid2.datagrid('unselectAll');
+														datagrid2.datagrid('load');
+														$.messager.show({
+															title:'提示',
+															msg:'发布成功！'
+														});
+													} else {
+														$.messager.alert("操作错误",r.msg,'error');
+													}
+												}
+											});
+										}
+									});
+								} else {
+									$.messager.alert('提示', '请选择一条记录！', 'error');
+								}
+							}
+						}, '-',
+						{
+							text:'取消选中',
+							iconCls:'icon-undo',
+							handler:function() {
+								datagrid2.datagrid('unselectAll');
+							}
+						}, '-' ]
+		});
+	});
+
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject(searchForm));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		searchForm.find('input').val('');
+	}
+	function _search_2() {
+		datagrid2.datagrid('load', sy.serializeObject(searchForm2));
+	}
+	function cleanSearch_2() {
+		datagrid2.datagrid('load', {});
+		searchForm2.find('input').val('');
+	}
+	function del2() {
+		var rows = datagrid2.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url:'/oa/meeting/del',
+						data:{
+							ids:ids.join(',')
+						},
+						dataType:'json',
+						success:function(r) {
+							datagrid2.datagrid('load');
+							datagrid2.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									title:'提示',
+									msg:'删除成功！'
+								});
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	var editor;
+	function add2(id_) {
+		$.messager.progress({
+			text:'数据加载中....',
+			interval:100
+		});
+		$('#Dialog_').dialog({
+		    title:(id_==undefined?"新增":"编辑")+"会议",   
+		    cache: false,
+		    maximizable:false,
+		    resizable:false,
+		    width:900,
+		    top:0,
+		    href: '/oa/meeting/edit/'+(id_==undefined?'':id_),   
+		    modal: false,
+		    onLoad:function(){$.messager.progress('close');
+		    	editor=KindEditor.create('.keditor', {
+				themeType : 'default',
+				uploadJson : '${root!}/file/up',
+				fileManagerJson : '${root!}/file/manager',
+				allowFileManager : false});
+		    },
+			buttons:[ {
+				text:'保存',
+				iconCls:'icon-save',
+				handler:function() {
+					articleForm = $('#editForm').form({
+						url:'/oa/meeting/save/?uids='+getChecked(),
+						success:function(data) {
+							var json = $.parseJSON(data);
+							if (json && json.success) {
+								$.messager.show({
+									title:'成功',
+									msg:json.msg
+								});
+								datagrid2.datagrid('reload');
+								$("#poid").val(json.obj);
+								//$('#Dialog_').dialog('close');
+							} else {
+								$.messager.show({
+									title:'失败',
+									msg:'操作失败！'
+								});
+							}
+						}
+					});
+					editor.sync();//ajax提交时需要执行此方法
+					editor.sync();
+					articleForm.submit();
+					}
+				},
+				{
+				text:"关闭",
+				iconCls:'icon-cancel',
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		}); 
+	}
+	function edit2() {
+		var rows = datagrid2.datagrid('getSelections');
+		if (rows.length == 1) {
+			add2(rows[0].ID);
+		} else {
+			$.messager.alert('提示', '请选择一条记录！', 'error');
+		}
+	}
+	function view(id_,title){
+		if(id_==undefined){
+			var rows = datagrid.datagrid('getSelections');
+			if (rows.length != 1){
+				rows = datagrid2.datagrid('getSelections');
+			}
+			if (rows.length == 1) {
+				id_=rows[0].ID;
+				title=rows[0].TITLE;
+			}else{
+				$.messager.alert('提示', '请选择一条记录！', 'error');
+				return;
+			}
+		}
+			$.messager.progress({
+				text:'数据加载中....',
+				interval:100
+			});
+			$('#Dialog_').dialog({
+			    title: '查看-'+title,   
+			    width: 800,   
+			    top:0, 
+			    cache: false,
+			    maximizable:true,
+			    href: '/oa/meeting/view/' + id_,   
+			    modal: true,
+			    onLoad:function(){$.messager.progress('close');},
+				buttons:[ {
+					text:"关闭",
+					handler:function() {
+						$('#Dialog_').dialog('close');
+					}
+				}]
+			});   
+	}
+</script>
+</head>
+<body class="easyui-layout" >
+<div id="meeting_tabs" class="easyui-tabs"  region="center" border="false" style="width:800px; height: 500px;">
+<div title="我参与的会议" style="padding:1px;" class="easyui-layout" >
+	<div region="north" border="false" title="搜索条件" collapsed="false" id="sto1"
+		style="height: 60px; overflow:hidden;" align="left">
+		<form id="searchForm">
+		<div class="tableForm datagrid-toolbar" style="height: 100%;width:100%;">
+			<table style="height: 100%;width: auto;">
+				<tr>
+					<td>标题</td>
+					<td><input name="title" style="width: 120px;"/></td>
+					<td>时间</td>
+					<td><input name="startDate"class="easyui-datebox"  size="10" >-<input name="endDate"class="easyui-datebox"  size="10" > </td>
+					<td><a href="javascript:void(0);" class="easyui-linkbutton"
+						iconCls="icon-search" onclick="_search();">查询</a><a
+						href="javascript:void(0);" class="easyui-linkbutton"
+						onclick="cleanSearch();" title="重置查询条件">取消</a></td>
+				</tr>
+			</table>
+		</div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="datagrid" ></table>
+	</div>
+</div>
+<div title="我发布的会议" style="padding:1px;" class="easyui-layout" >
+	<div region="north" border="false" title="搜索条件" collapsed="false"id="sto2"
+		style="height: 60px; overflow:hidden;" align="left">
+		<form id="searchForm_2">
+		<div class="tableForm datagrid-toolbar" style="height: 100%;width:100%;">
+			<table style="height: 100%;width: auto;">
+				<tr>
+					<td>标题</td>
+					<td><input name="title" style="width: 120px;"/></td>
+					<td>时间</td>
+					<td><input name="startDate"class="easyui-datebox" size="10" >-<input name="endDate"class="easyui-datebox"  size="10" > </td>
+					<td><a href="javascript:void(0);" class="easyui-linkbutton"
+						iconCls="icon-search" onclick="_search_2();">查询</a><a
+						href="javascript:void(0);" class="easyui-linkbutton"
+						onclick="cleanSearch_2();" title="重置查询条件">取消</a></td>
+				</tr>
+			</table>
+		</div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="datagrid_2" ></table>
+	</div>
+</div>
+</div>
+	<div id="Dialog_"></div>
+</@layout>

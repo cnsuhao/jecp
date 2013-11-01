@@ -1,0 +1,347 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var searchForm;
+	var datagrid;
+	var employeeForm;
+	var stat=["离职","在职","休假","出差"];
+	var sex=["女","男"];
+	$(function() {
+		//查询列表	
+		searchForm = $('#searchForm').form();
+		datagrid = $('#datagrid').datagrid({
+			url : '/hr/employee/dataGrid',
+			pagination:true,
+			pagePosition:'bottom',
+			rownumbers:true,
+			pageSize:20,
+			pageList:[ 20, 50, 100 ],
+			fit:true,
+			fitColumns:true,
+			nowrap:true,
+			border:false,
+			idField:'ID',
+			sortName:'',
+			sortOrder:'',
+			columns:[ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value, row, index) {
+					return row.ID;
+				}
+			},{
+				title : 'ID',
+				field : 'ID',
+				hidden : true
+			},{
+				title : '员工编号',
+				field : 'USERNO',
+				sortable : true
+			} ,{
+				field:'FULLNAME',
+				title:'姓名',
+				sortable : true
+			},{
+				field:'GENDER',
+				title:'性别',
+				sortable : true,
+				formatter:function(value,row,index){
+					return sex[value];
+				}
+			},{
+				field:'PARTNAME',
+				title:'部门',
+				sortable : true
+			},{
+				field:'POSTNAME',
+				title:'职位',
+				sortable : true
+			},{
+				field:'PHONE',
+				title:'手机'
+			},{
+				field:'TELPHONE',
+				title:'电话'
+			},{
+				field:'WORKTIME',
+				title:'入职时间',
+				sortable : true
+			},{
+				field:'STAT',
+				title:'状态',
+				sortable : true,
+				formatter:function(value,row,index){
+					return stat[value];
+				}
+			}] ],
+			toolbar:[
+			{
+				text:'查看',
+				iconCls:'icon-eye',
+				handler:function() {
+					view();
+				}
+			},
+			<@btnPower safecode="employeeManage">
+			    {
+				text:'增加',
+				iconCls:'icon-add',
+				handler:function() {
+					add();
+				}
+			}, '-',
+			{
+				text:'删除',
+				iconCls:'icon-remove',
+				handler:function() {
+					del();
+				}
+			}, '-', {
+				text:'修改',
+				iconCls:'icon-edit',
+				handler:function() {
+					edit();
+				}
+			}, '-', {
+				text:'设置密码',
+				iconCls:'icon-edit',
+				handler:function() {
+					setPwd();
+				}
+			}, '-',
+			</@btnPower>
+			{
+				text:'取消选中',
+				iconCls:'icon-undo',
+				handler:function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ],
+			onRowContextMenu:function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left:e.pageX,
+					top:e.pageY
+				});
+			}
+		});
+	});
+
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject(searchForm));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		searchForm.find('input').val('');
+	}
+	function del() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url : '/hr/employee/del',
+						data:{
+							ids:ids.join(',')
+						},
+						dataType:'json',
+						success:function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									title:'提示',
+									msg:'删除成功！'
+								});
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	var editor;
+	function add(id_) {
+		$.messager.progress({
+			text:'数据加载中....',
+			interval:100
+		});
+		$('#Dialog_').dialog({
+		    title:(id_==undefined?"新增":"编辑")+'员工信息',   
+		    cache: false,
+		    maximizable:false,
+		    resizable:false,
+		    width:800,
+		    top:0,
+		    href: '/hr/employee/edit/'+(id_==undefined?'':id_),   
+		    modal: false,
+		    onLoad:function(){$.messager.progress('close');
+		    	editor=KindEditor.create('.keditor', {
+				themeType : 'default',
+				uploadJson : '/file/up',
+				fileManagerJson : '/file/manager',
+				allowFileManager : false
+			});},
+			buttons:[ {
+				text:'保存',
+				iconCls:'icon-save',
+				handler:function() {
+					employeeForm = $('#editForm').form({
+						url:'/hr/employee/save',
+						success:function(data) {
+							var json = $.parseJSON(data);
+							if (json && json.success) {
+								$.messager.show({
+									title:'成功',
+									msg:json.msg
+								});
+								datagrid.datagrid('reload');
+								$("#poid").val(json.obj);
+								$("#token").val(json.tokenid);
+								//$('#Dialog_').dialog('close');
+							} else {
+								$.messager.show({
+									title:'失败',
+									msg:'操作失败！'
+								});
+							}
+						}
+					});
+					try{
+						editor.sync();//ajax提交时需要执行此方法
+						editor.sync();
+					}catch(e){}
+						employeeForm.submit();
+					}
+				},
+				{
+				text:"关闭",
+				iconCls:'icon-cancel',
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		}); 
+	}
+	function edit() {
+		var rows = datagrid.datagrid('getSelections');
+		if (rows.length == 1) {
+			add(rows[0].ID);
+		} else {
+			$.messager.alert('提示', '请选择一条记录！', 'error');
+		}
+	}
+	function view(){
+		var rows = datagrid.datagrid('getSelections');
+		if (rows.length == 1) {
+			$.messager.progress({
+				text:'数据加载中....',
+				interval:100
+			});
+			$('#Dialog_').dialog({
+			    title: '查看-'+rows[0].FULLNAME,   
+			    width: 800,
+			    top:0, 
+			    cache: false,
+			    maximizable:false,
+			    href: '/hr/employee/view/' + rows[0].ID,   
+			    modal:false,
+			    onLoad:function(){$.messager.progress('close');},
+				buttons:[ {
+					text:"关闭",
+					handler:function() {
+						$('#Dialog_').dialog('close');
+					}
+				}]
+			});   
+		} else {
+			$.messager.alert('提示', '请选择一条记录！', 'error');
+		}
+	}
+	function setPwd(){
+		var rows = datagrid.datagrid('getSelections');
+		if (rows.length == 1) {
+			$.messager.prompt("设置密码-"+rows[0].FULLNAME,"请输入密码！",function(pwd){
+				if(pwd!=undefined)
+				$.ajax({url:'/hr/employee/savePwd/',data:"&id="+rows[0].id+"&pwd="+pwd,type:'POST',dataType:'json',
+					success:function(json){
+						if (json && json.success) {
+							$.messager.alert('操作成功','设置密码成功！<br>密码为 <b>'+pwd+'</b>,请牢记！','info');
+						} else {
+							$.messager.alert('失败','操作失败！'+json.msg,"error");
+						}
+					}});
+			});
+		} else {
+			$.messager.alert('提示', '请选择一条记录！', 'error');
+		}
+	}
+	$(function(){
+		$('#tt').tree({url:'${root!}/sys/partment/combotree',valueField:'ID',textField:'CNAME',animate:true,onSelect:function(node){
+			$("#partid").val(node.id);
+			_search();
+		}});
+	});
+</script>
+</head>
+<body class="easyui-layout">
+<form id="searchForm">
+<div region="west" border="true"  style="width: 200px;"split=false>
+<ul id="tt"></ul>
+<input type="hidden" name="partid" id="partid" >
+</div>
+<div region="center"  class="easyui-layout">
+	<div region="north" border="false" 
+		style=" overflow:hidden;" align="left"class="tableForm datagrid-toolbar">
+		   <div class="datagrid-toolbar" style="width:100%;">
+			<ul class="tableFormUL">
+				<li>编号<input name="userno" style="width: 60px;"/></li>
+			    <li>姓名<input name="fullname" style="width: 60px;"/></li>
+				<li>角色<input class="easyui-combobox" id="role" name="role"style="width: 80px;"
+						data-options="url:'/sys/role/combobox',valueField:'ID',textField:'CNAME',panelHeight:'auto'">
+				</li>
+				<li>职位<input type="text" name="postid" class="easyui-combotree" style="width: 80px;"
+data-options="url:'/sys/post/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto',multiple:false"></li>
+				<li>状态
+					<select class="easyui-combobox" id="stat" name="stat"
+						data-options="panelHeight:'auto'">
+						<option value="">全部</option>
+						<option value="0">离职</option>
+						<option value="1">在职</option>
+						<option value="2">休假</option>
+						<option value="3">出差</option>
+					</select>
+				</li>
+				<li><a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-search" onclick="_search();">查询</a>
+				</li>
+				<li>
+					<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">取消</a>
+				</li>
+			</ul>
+		  </div>
+	</div>
+
+	<div region="center" border="false">
+		<table id="datagrid"></table>
+	</div>
+</div>
+</form>
+	<div id="Dialog_"></div>
+	<div id="menu" class="easyui-menu" style="width: 120px; display: none;">
+		<div onclick="view();" iconCls="icon-search">查看</div>
+		<@btnPower safecode="employeeManage">
+		<div onclick="add();" iconCls="icon-add">增加</div>
+		<div onclick="del();" iconCls="icon-remove">删除</div>
+		<div onclick="edit();" iconCls="icon-edit">编辑</div>
+		</@btnPower>
+	</div>
+</@layout>

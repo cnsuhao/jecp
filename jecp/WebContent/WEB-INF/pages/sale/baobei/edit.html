@@ -1,0 +1,37 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>客户id</th>
+<td><input type="text" name="custid"class="easyui-validatebox" value="${(po.custid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>厂商id</th>
+<td><input type="text" name="venderid"class="easyui-validatebox" value="${(po.venderid)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>产品id</th>
+<td><input type="text" name="prodcutid"class="easyui-validatebox" value="${(po.prodcutid)!}"data-options="required:true"></td>
+<th>报备过期时间</th>
+<td><input type="text" name="bbgqsj"class="easyui-validatebox" value="${(po.bbgqsj)!}"></td>
+</tr>
+<tr>
+<th>过期提醒</th>
+<td><input type="text" name="guoqitixing"class="easyui-validatebox" value="${(po.guoqitixing)!}"></td>
+<th>注意事项</th>
+<td><input type="text" name="zhuyishixiang"class="easyui-validatebox" value="${(po.zhuyishixiang)!}"></td>
+</tr>
+<tr>
+<th>报备单</th>
+<td><input type="text" name="baobeibill"class="easyui-validatebox" value="${(po.baobeibill)!}"></td>
+<th><font color=red>*</font>报备时间</th>
+<td><input type="text" name="ctime"class="easyui-validatebox" value="${(po.ctime)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>报备人</th>
+<td><input type="text" name="uid"class="easyui-validatebox" value="${(po.uid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>模版id</th>
+<td><input type="text" name="mbid"class="easyui-validatebox" value="${(po.mbid)!}"data-options="required:true"></td>
+</tr>
+<tr>
+</tr>
+</table>
+</form>

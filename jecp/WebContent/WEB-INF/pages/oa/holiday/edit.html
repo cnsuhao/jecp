@@ -1,0 +1,21 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>标题</th>
+<td><input type="text" name="title"class="easyui-validatebox" value="${(po.title)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>开始时间</th>
+<td><input type="text" name="startdate"class="easyui-validatebox easyui-datebox"  value="${(po.startdate)!}"data-options="required:true"></td>
+<th><font color=red>*</font>结束时间</th>
+<td><input type="text" name="enddate"class="easyui-validatebox easyui-datebox" value="${(po.enddate)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th>调整时间</th>
+<td><input type="text" name="startdatetiao"class="easyui-datebox" value="${(po.startdatetiao)!}"></td>
+<th>调整结束时间</th>
+<td><input type="text" name="enddatetiao"class="easyui-datebox" value="${(po.enddatetiao)!}"></td>
+</tr>
+</table>
+</form>

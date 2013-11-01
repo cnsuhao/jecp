@@ -1,0 +1,102 @@
+<script type="text/javascript" charset="utf-8">
+	var onlineDatagrid;
+	var onlinePanel;
+	var calendar;
+	var userOnlineInfoDialog;
+	var userOnlineInfoDataGrid;
+	$(function() {
+		calendar = $('#calendar').calendar({
+			fit : true,
+			current : new Date(),
+			border : false,
+			onSelect : function(date) {
+				$(this).calendar('moveTo', new Date());
+			}
+		});
+		onlinePanel = $('#onlinePanel').panel({
+			tools : [ {
+				iconCls : 'icon-reload',
+				handler : function() {
+					if (onlineDatagrid.datagrid('options').url) {
+						onlineDatagrid.datagrid('load');
+					}
+				}
+			} ]
+		});
+
+		onlineDatagrid = $('#onlineDatagrid').datagrid({
+			url : 'onlineUser',
+			title : '',
+			iconCls : '',
+			fit : true,
+			fitColumns : true,
+			pagination : false,
+			pageSize : 9999,
+			pageList : [ 10 ],
+			nowarp : false,
+			border : false,
+			idField : 'cid',
+			sortName : 'LOGINTIME',
+			sortOrder : 'desc',
+			columns : [ [ {
+				title : 'ID',
+				field : 'ID',
+				hidden:true
+			},{
+				title : '编号',
+				field : 'USERNO',
+				width : 150
+			},{
+				title : '姓名',
+				field : 'FULLNAME',
+				width : 150,
+				formatter : function(value, rowData, rowIndex) {
+					return '<span title="{0}">{1}</span>'.format(value, value);
+				}
+			}, {
+				title : '部门',
+				field : 'CNAME',
+				width : 150,
+				formatter : function(value, rowData, rowIndex) {
+					return '<span title="{0}">{1}</span>'.format(value, value);
+				}
+			}, {
+				title : 'IP',
+				field : 'IP',
+				width : 150,
+				formatter : function(value, rowData, rowIndex) {
+					return '<span title="{0}">{1}</span>'.format(value, value);
+				}
+			}, {
+				title : '登录时间',
+				field : 'LOGINTIME',
+				width : 150,
+				formatter : function(value, rowData, rowIndex) {
+					return '<span title="{0}">{1}</span>'.format(value, value);
+				}
+			} ] ],
+			onClickRow : function(rowIndex, rowData) {
+				
+			},
+			onLoadSuccess : function(data) {
+				onlinePanel.panel('setTitle', '(' + data.total + ')人在线');
+			}
+		});
+
+		setInterval(function(){onlineDatagrid.datagrid("load",{})},300000);//5分钟刷新
+	});
+</script>
+<div class="easyui-layout" fit="true" border="false">
+	<div region="north" border="false" style="height:180px;overflow: hidden;">
+		<div id="calendar"></div>
+	</div>
+	<div region="center" border="false" style="overflow: hidden;">
+		<div id="onlinePanel" fit="true" border="false" title="用户在线列表">
+			<table id="onlineDatagrid"></table>
+		</div>
+	</div>
+
+	<div id="userOnlineInfoDialog" style="display: none;width: 250px;height: 130px;">
+		<table id="userOnlineInfoDataGrid"></table>
+	</div>
+</div>

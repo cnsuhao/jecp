@@ -1,0 +1,25 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>产品类型</th>
+<td><input type="text" name="prodcuttype"class="easyui-validatebox" value="${(po.prodcuttype)!}"data-options="required:true"></td>
+<th><font color=red>*</font>产品名称</th>
+<td><input type="text" name="proname"class="easyui-validatebox" value="${(po.proname)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th>购买数量</th>
+<td><input type="text" name="gmsl"class="easyui-validatebox" value="${(po.gmsl)!}"></td>
+<th>购买日期</th>
+<td><input type="text" name="gmsj"class="easyui-validatebox" value="${(po.gmsj)!}"></td>
+</tr>
+<tr>
+<th>预计购买日期</th>
+<td><input type="text" name="yjgmsj"class="easyui-validatebox" value="${(po.yjgmsj)!}"></td>
+<th><font color=red>*</font>客户id</th>
+<td><input type="text" name="custid"class="easyui-validatebox" value="${(po.custid)!}"data-options="required:true"></td>
+</tr>
+<tr>
+</tr>
+</table>
+</form>

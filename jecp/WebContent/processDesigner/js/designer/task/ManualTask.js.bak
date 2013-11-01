@@ -1,0 +1,20 @@
+draw2d.ManualTask=function(_url){
+	draw2d.BaseTask.call(this,_url);
+	this.setContent("hahahaha");
+};
+draw2d.ManualTask.prototype=new draw2d.BaseTask();
+draw2d.ManualTask.prototype.type="ManualTask";
+draw2d.ManualTask.prototype.createHTMLElement=function(){
+	var item = draw2d.BaseTask.prototype.createHTMLElement.call(this);
+	return item;
+};
+draw2d.ManualTask.prototype.setDimension=function(w, h){
+	draw2d.BaseTask.prototype.setDimension.call(this, w, h);
+};
+draw2d.ManualTask.prototype.setWorkflow=function(_5019){
+	draw2d.BaseTask.prototype.setWorkflow.call(this,_5019);
+};
+draw2d.ManualTask.prototype.setContent = function(_5014) {
+	draw2d.BaseTask.prototype.setContent.call(this,_5014);
+	alert(this.getHTMLElement().innerHTML);
+};

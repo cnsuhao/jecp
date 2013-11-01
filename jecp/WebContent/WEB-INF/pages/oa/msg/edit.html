@@ -1,0 +1,21 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>标题</th>
+<td><input type="text" name="title"class="easyui-validatebox" value="${(po.title)!}"data-options="required:true"></td>
+<th><font color=red>*</font>发件人</th>
+<td><input type="text" name="sender"class="easyui-validatebox" value="${(po.sender)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>创建时间</th>
+<td><input type="text" name="ctime"class="easyui-validatebox" value="${(po.ctime)!}"data-options="required:true"></td>
+<th><font color=red>*</font>内容</th>
+<td><input type="text" name="content"class="easyui-validatebox" value="${(po.content)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>状态</th>
+<td><input type="text" name="stat"class="easyui-validatebox" value="${(po.stat)!}"data-options="required:true"></td>
+</tr>
+</table>
+</form>

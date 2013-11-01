@@ -1,0 +1,65 @@
+<#include "inc/layout.html">
+<@layout title="系统登录">
+<script src="${root!}/js/jquery.validate.js"></script>
+<script src="${root!}/js/jquery.validate.messages_zh.js"></script>
+<script src="${root!}/js/jquery.validate.method.js"></script>
+<link rel="stylesheet" href="${root!}/css/login.css" type="text/css"></link>
+<script type="text/javascript">
+$(function(){ValidForm();});
+function goto(url){
+	$("#loginDiv").fadeOut(500,function(){
+		window.location.reload();		
+	});
+}
+</script>
+<div style="margin:0 auto;width:980px;margin-top:100px;" id="loginDiv">
+<form action="${root!}/login" method="post" class="validate" event="goto('${goto!}');" startEvent="" id="form">
+<div class="fl"><img src="${root!}/login.jpg"></div>
+				<div class="loginpanel loginpanel-novcode fr">
+					<div class="inner">
+						<div class="panelbody">
+							<div class="header">
+								<h3>&nbsp;&nbsp;系统登录</h3>
+							</div>
+							<div class="body">
+								<div class="row">
+									<div class="caption">用户名</div>
+									<div class="content">
+										<div class="textbox textbox-tip">
+											<input autocomplete="off" id="user_name" tip="会员帐号/手机号" type="text" name="userno" value="${cookie_teauserno!}loyin" required>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="caption">密　码</div>
+									<div class="content">
+										<div class="textbox textbox-tip">
+											<input id="password" type="password" name="pwd" value="123456" required>
+										</div>
+									</div>
+								</div>
+								<div class="row row-vcode">
+									<div class="caption">验证码</div>
+									<div class="content">
+										<div class="textbox vcode textbox-tip">
+											<input id="vcode" class="vcode" type="text" value="1234" name="validCode" maxlength="4" required>
+										</div>
+										<a href="#" title="点击更换" class="vcodepic"><img src="${root!}/ValidCode/jpg?id=" title="点击更换" onclick="$(this).attr('src','${root!}/ValidCode/jpg?id=' + (new Date()).getTime()); return false;"></a>
+										<span class="texttip">看不清？<a href="#" onclick="$(this).parent().prev().children('img').attr('src','${root!}/ValidCode/jpg?id=' + (new Date()).getTime()); return false;">换一张</a></span>
+									</div>
+								</div>
+								<div class="row buttons ">
+									<button type="submit" id="subtn" style="display:none;"></button>
+									<a href="#" onclick="$('#subtn').click();" id="btn_login" class="loginbtn"></a><a href="/teacher/findpwd">忘记密码？</a>
+								</div>
+								<div class="row buttons pt5 pb5 pr0">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+</form>
+</div>
+<div id="bottom">
+</div>
+</@layout>

@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" lang="UTF-8">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>JFPL By OGKINO</title>
+<script src="../../js/swfobject.js"></script>
+<script>
+var si = 0;
+
+function $d(e){
+	return document.getElementById(e);
+}
+
+function $f(e){
+	return swfobject.getObjectById(e);
+}
+
+
+function _JFPL_LOADED(){
+	window.uname = 'JFPL用户' + parseInt(1000*Math.random());
+	$f('jfpl').width = 214;
+	$f('jfpl').height = 137;
+	$f('jfpl').uname(window.uname);
+	$f('jfpl').room('001');
+	$f('jfpl').maxuser(1);
+}
+
+function _JFPL_CONNECTED(info,num){
+	$f('jfpl').width = 214;
+	$f('jfpl').height = 137;
+	$d('btn').disabled = '';
+	$d("count").innerHTML = "当前在线 "+num+" 人";
+	$d("myname").innerHTML = "<div id=\"uid_"+info.sender_id+"\" style=\"color:blue;\">"+info.sender_name+"</div>";
+	$f('jfpl').timer('计时器1',2);
+	$f('jfpl').timer('计时器2',6);
+}
+
+function _JFPL_REJECTED(){
+	alert("请刷新页面选择允许,否则无法通信...");
+}
+ 
+function _JFPL_MYINFO(info){
+	//info.name,info.id,info.group
+	$d('myinfo').value = "所在房间:"+info.group;
+}
+
+function _JFPL_ONDATA(data){
+	if(si>20){
+		$d("chatmain").innerHTML = data;
+		si = 0;
+	}
+	else{
+		$d("chatmain").innerHTML += data;
+		$d("chatmain").scrollTop=document.body.scrollHeight;
+		si++;
+	}
+}
+
+function _JFPL_USERJOIN(info,num){
+	$d("count").innerHTML = "当前在线 "+num+" 人";
+	$d("userlist").innerHTML += "<div id=\"uid_"+info.sender_id+"\">"+info.sender_name+"</div>";
+	$d("chatlist").options.add(new Option(info.sender_name,info.sender_id)); 
+}
+
+function _JFPL_USERLEAVE(info,num){
+	//alert(info.sender_name);
+	$d("count").innerHTML = "当前在线 "+num+" 人";
+	$d("userlist").removeChild($d("uid_"+info.sender_id));
+	for(var i=0;i<$d("chatlist").options.length;i++){
+		if(info.sender_id == $d("chatlist").options[i].value)
+		$d("chatlist").removeChild($d("chatlist").options[i]);
+	}
+}
+
+function _JFPL_TIMEUP(name){
+	switch(name){
+		case '计时器1':
+		//	$d("chatmain").innerHTML += "<font color=red><b>欢迎你来到JFPL的P2P聊天室,尽情的畅聊吧!</b></font><br><br>";
+			break;
+		case '计时器2':
+		//	$d("chatmain").innerHTML += "<font color=green><b>请勿发布违反国家法律的敏感话题!</b></font><br><br>";
+			break;
+		default:
+	}
+} 
+
+function _JFPL_TOOMANY(num){
+	alert("连接人数过多,和服务器断开..."+num);
+	location.reload();
+}
+
+function say(){
+	if($d('chat').value=="") return false;
+	$d('chat').value = $d('chat').value.replace("<","&lt;");
+	$d('chat').value = $d('chat').value.replace(">","&gt;");
+	if($d('chatlist').value==0) {
+		$d("chatmain").innerHTML += '你对大家说: '+$d('chat').value+'<br><br>';
+		$f('jfpl').send('['+window.uname+']对大家说: '+$d('chat').value+'<br><br>',$d('chatlist').value);
+	}
+	else {
+		$d("chatmain").innerHTML += '你对['+$d("chatlist").options[$d("chatlist").selectedIndex].text+']说: '+$d('chat').value+'<br><br>';
+		$f('jfpl').send('['+window.uname+']对<font color=red>你</font>说: '+$d('chat').value+'<br><br>',$d('chatlist').value);
+	}
+	$d("chatmain").scrollTop = document.body.scrollHeight;
+	$d('chat').value="";
+	si++;
+}
+
+function enter_chat(){
+	if(document.addEventListener){
+		document.addEventListener("keypress",enter_handler, true);
+	}
+	else{
+		document.attachEvent("onkeypress",enter_handler);
+	}
+}
+function enter_handler(event){
+	if(event.keyCode==13) say();
+}
+
+
+</script>
+</head>
+
+<body>
+<br><br>
+<div style="overflow-y: auto; width:500px; height:300px; border:1px #333333 dashed; float:left; margin:0 20px; padding:10px; font-size:14px; color:#333333;" id="chatmain"></div>
+<div style="overflow-y: auto; width:100px; height:320px; border:1px #333333 dashed; float:left; font-size:13px;" id="userlist">
+<div id="count" style="font-size:12px"></div>
+<div id="myname"></div>
+</div>
+<div id="jfpl" style="float:left; margin-left:20px;"></div>
+<div style="clear:both; padding-top:20px; margin-left:40px;">
+我的信息:<input type="text" id="myinfo" size="80" readonly><br><br>
+对<select id="chatlist">
+<option value="0">所有人</option>
+</select>说: 
+<input type="text" id="chat" size="50" onkeydown="enter_chat();">
+<input type="button" value="[按回车]发送" id="btn" onclick="say();" disabled="disabled">
+
+</div>
+<br><br>
+<script>
+swfobject.embedSWF("jfpl.swf", "jfpl", "1", "1", "10.1.0", "expressInstall.swf");
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>cname</th>
+<td><input type="text" name="cname"class="easyui-validatebox" value="${(po.cname)!}"data-options="required:true"></td>
+<th><font color=red>*</font>hotline</th>
+<td><input type="text" name="hotline"class="easyui-validatebox" value="${(po.hotline)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>nettel</th>
+<td><input type="text" name="nettel"class="easyui-validatebox" value="${(po.nettel)!}"data-options="required:true"></td>
+<th><font color=red>*</font>kdyname</th>
+<td><input type="text" name="kdyname"class="easyui-validatebox" value="${(po.kdyname)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>kdytel</th>
+<td><input type="text" name="kdytel"class="easyui-validatebox" value="${(po.kdytel)!}"data-options="required:true"></td>
+<th>sortnum</th>
+<td><input type="text" name="sortnum"class="easyui-validatebox" value="${(po.sortnum)!}"></td>
+</tr>
+<tr>
+</tr>
+</table>
+</form>

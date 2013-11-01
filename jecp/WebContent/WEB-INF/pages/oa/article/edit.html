@@ -1,0 +1,20 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>标题</th>
+<td><input type="text" name="TITLE" class="easyui-validatebox" value="${(po.title!)!}" data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>文章分类</th>
+<td><input style="width:130px;" class="easyui-combotree" value="${(po.actcateid!)!}" id="ACTCATEID" name="ACTCATEID"
+data-options="required:true,url:'${root!}/oa/articleCate/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto'"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>内容</th>
+<td>
+<textarea class="keditor easyui-validatebox" style="width:670px;height:300px;" data-options="required:true" name="CONTENT">${(po.content!)!}</textarea>
+</td>
+</tr>
+</table>
+</form>

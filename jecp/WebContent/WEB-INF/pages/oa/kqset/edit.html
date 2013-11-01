@@ -1,0 +1,26 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th>工作日</th>
+<td colspan="3">
+<input type="checkbox" name="z1"value="1"<#if ((po.z1)!0)==1>checked='checked'</#if>>周一
+<input type="checkbox" name="z2"value="1"<#if ((po.z2)!0)==1>checked='checked'</#if>>周二
+<input type="checkbox" name="z3"value="1"<#if ((po.z3)!0)==1>checked='checked'</#if>>周三
+<input type="checkbox" name="z4"value="1"<#if ((po.z4)!0)==1>checked='checked'</#if>>周四
+<input type="checkbox" name="z5"value="1"<#if ((po.z5)!0)==1>checked='checked'</#if>>周五
+<input type="checkbox" name="z6"value="1"<#if ((po.z6)!0)==1>checked='checked'</#if>>周六
+<input type="checkbox" name="z7"value="1"<#if ((po.z7)!0)==1>checked='checked'</#if>>周日</td>
+</tr>
+<tr>
+<th>上班是时间</th>
+<td><input type="text" name="starttime"value="${(po.starttime)!}"></td>
+<th>下班时间</th>
+<td><input type="text" name="endtime"value="${(po.endtime)!}"></td>
+</tr>
+<tr>
+<th>执行日期</th>
+<td colspan="3"><input type="text" name="exctdate"value="${(po.exctdate)!}" class="easyui-datebox"></td>
+</tr>
+</table>
+</form>

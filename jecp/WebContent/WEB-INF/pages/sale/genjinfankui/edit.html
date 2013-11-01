@@ -1,0 +1,15 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>跟进id</th>
+<td><input type="text" name="gjid"class="easyui-validatebox" value="${(po.gjid)!}"data-options="required:true"></td>
+<th>联系记录</th>
+<td><input type="text" name="lxjl"class="easyui-validatebox" value="${(po.lxjl)!}"></td>
+</tr>
+<tr>
+<th>反馈</th>
+<td><input type="text" name="fankui"class="easyui-validatebox" value="${(po.fankui)!}"></td>
+</tr>
+</table>
+</form>

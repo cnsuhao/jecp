@@ -1,0 +1,24 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>模版名称</th>
+<td><input type="text" name="cname"class="easyui-validatebox" value="${(po.cname)!}"data-options="required:true"></td>
+</tr>
+<#--
+<tr>
+<th>模版类型</th>
+<td><input type="radio" name="mbtype"  value="0" <#if (po.mbtype)!0==0>checked="checked"</#if>>word
+<input type="radio" name="mbtype"  value="1" <#if (po.mbtype)!0==1>checked="checked"</#if>>Excel
+</td>
+</tr>
+<tr>
+<th>Excel文件</th>
+<td><input type="text" name="filepath"class="easyui-validatebox" value="${(po.filepath)!}"></td>
+</tr>-->
+<tr>
+<th>内容</th>
+<td><textarea name="content"class="keditor"  style="width:100%;">${(po.content)!}</textarea></td>
+</tr>
+</table>
+</form>

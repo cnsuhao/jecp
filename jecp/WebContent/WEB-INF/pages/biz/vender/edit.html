@@ -1,0 +1,69 @@
+<form method="post" id="veditForm" name="veditForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<div  id="tt" class="easyui-tabs" style="width: 786px; height: 450px;">
+<div title="厂商信息" style="padding:5px;">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>厂商名称</th>
+<td><input type="text" name="cname"class="easyui-validatebox" value="${(po.cname)!}"data-options="required:true"></td>
+<th><font color=red>*</font>简称</th>
+<td><input type="text" name="jcname"class="easyui-validatebox" value="${(po.jcname)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>行业</th>
+<td><input type="text" name="hangye"class="easyui-validatebox easyui-combobox" data-options="url:'/sys/parame/combobox/HANGYE',valueField:'ID',textField:'CNAME',required:true" value="${(po.hangye)!}"></td>
+<th><font color=red>*</font>厂商类型</th>
+<td><input type="text" name="type"class="easyui-validatebox easyui-combobox" value="${(po.type)!}"data-options="required:true,url:'/sys/parame/combobox/CSLX',valueField:'ID',textField:'CNAME'"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>来源</th>
+<td><input type="text" name="laiyuan"class="easyui-combobox" value="${(po.laiyuan)!}"data-options="url:'/sys/parame/combobox/CSLY',valueField:'ID',textField:'CNAME'"></td>
+<th><font color=red>*</font>省份城市</th>
+<td>
+<input type="text" name="province"class="easyui-validatebox easyui-combobox" style="width:80px" data-options="required:true,url:'/sys/area/combobox/0',valueField:'ID',textField:'CNAME',onSelect:function(r){$('#veditForm_city').combobox({url:'/sys/area/combobox/'+r.ID});}" value="${(po.province)!}">省
+<input type="text" id="veditForm_city" name="city"class="easyui-validatebox easyui-combobox" style="width:80px"data-options="required:true,url:'/sys/area/combobox',valueField:'ID',textField:'CNAME'" value="${(po.city)!}"></td>
+</tr>
+<tr>
+<th>电话</th>
+<td><input type="text" name="telphone"value="${(po.telphone)!}"></td>
+<th>传真</th>
+<td><input type="text" name="fax"value="${(po.fax)!}"></td>
+</tr>
+<tr>
+<th>邮编</th>
+<td><input type="text" name="zipcode"value="${(po.zipcode)!}"></td>
+<th>地址</th>
+<td><input type="text" name="addr"value="${(po.addr)!}"></td>
+</tr>
+<tr>
+<th>接收报备的EMAIL</th>
+<td><input type="text" name="email"value="${(po.email)!}"></td>
+<th>报备期限</th>
+<td><input type="text" name="bblimit"value="${(po.bblimit)!}"></td>
+</tr>
+<tr>
+<th>公司网址</th>
+<td><input type="text" name="web"value="${(po.web)!}"></td>
+<th>银行账号</th>
+<td><input type="text" name="bankaccount"value="${(po.bankaccount)!}"></td>
+</tr>
+<tr>
+<th>开户行</th>
+<td><input type="text" name="bank"class="easyui-combobox" value="${(po.bank)!}"data-options="url:'/sys/parame/combobox/KHYH',valueField:'ID',textField:'CNAME'"></td>
+<th>网络规模</th>
+<td><input type="text" name="netscale"class="easyui-combobox" value="${(po.netscale)!}"data-options="url:'/sys/parame/combobox/WLGM',valueField:'ID',textField:'CNAME'"></td>
+</tr>
+<tr>
+<th>税号</th>
+<td><input type="text" name="taxnum"value="${(po.taxnum)!}"></td>
+</tr>
+<tr>
+<th>公司简介</th>
+<td colspan="3" ><textarea name="summary"style="width:100%;">${(po.summary)!}</textarea></td>
+</tr>
+</table>
+</div>
+<div title="联系人" style="padding:5px;">
+</div>
+</div>
+</form>

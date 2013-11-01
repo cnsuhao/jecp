@@ -1,0 +1,14 @@
+查询数据库表
+select table_name,table_comment  from information_schema.tables where table_schema='easyjfoa'
+
+从mysql table表导入到sys_form表：
+delete from sys_form;
+insert into sys_form (tname,zhus,tbtype) select table_name,table_comment,1  from information_schema.tables where table_schema='easyjfoa'
+
+查询字段
+select column_name,ordinal_position,column_default,is_nullable,data_type,character_maximum_length,
+character_octet_length,column_type,column_comment from information_schema.columns c where table_schema='easyjfoa'
+
+导入到 sys_formfield
+delete from sys_formfield;
+insert into sys_formfield(FIELDNAME,FIELDDESC,FMID,FTYPE) select  c.column_name,column_comment,f.id,column_type  from sys_form f,information_schema.columns c where f.tname=c.table_name and table_schema='easyjfoa'

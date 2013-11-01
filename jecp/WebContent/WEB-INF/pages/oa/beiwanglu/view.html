@@ -1,0 +1,67 @@
+	<div id="tt" class="easyui-tabs" style="width: 786px; height: 450px;">
+		<div title="基本信息" style="padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th>标题</th>
+					<td colspan="3">${(po.title)!}</td>
+				</tr>
+				<tr>
+					<th>提醒频率</th>
+					<td id='txpl11'><script>$("#txpl11").html(txpl[${(po.txpl)!}]);</script></td>
+					<th>提醒时间</th>
+					<td>${((po.txdate)!)?string('yyyy-MM-dd HH:mm:ss')}</td>
+				</tr>
+				<tr>
+					<th>提醒人员</th><td><#if ((po.txbr)!0)==1>本人，</#if><#if ((po.txshare)!0)==1>所有共享人员</#if></td>
+					<th>提醒方式</th><td><#if ((po.imtx)!0)==1>即时通信，</#if><#if ((po.emailtx)!0)==1>Email，</#if><#if ((po.smstx)!0)==1>短信</#if></td>
+				</tr>
+				<tr>
+					<td colspan="4"><textarea name="CONTEXT" class="keditor" style="width:750px;height:400px;"required="required">${(po.context)!}</textarea></td>
+				</tr>
+			</table>
+		</div>
+		<#if shareList??>
+		<div title="共享" style="overflow: auto; padding:5px;">
+		<#--人员组织-->
+			<#list shareList as p>${(p.fullname)!}(${(p.userno)!}-${(p.pname)!})，&nbsp;</#list>
+		</div>
+		</#if>
+		<div title="评论" style="overflow: auto; padding:5px;">
+			<table class="tableForm tableCss">
+			<#if plList??>
+				<thead>
+				<tr>
+					<th>评论人</th>
+					<th colspan="2">评论内容</th>
+				</tr>
+				</thead>
+				<tbody id="pltbody" style="overflow:scroll;height:400px;">
+				<#list plList as p>
+				<tr>
+					<td>${(p.fullname)!}(${(p.userno)!}-${(p.pname)!})<br>${((p.pltime)!)?string('yyyy-MM-dd HH:mm:ss')}</td>
+					<td colspan="2">${((p.context)!)?replace('\\n','<br>')}</td><#--plnr 评论内容 pltime 评论时间-->
+				</tr>
+				</#list>
+				</tbody>
+			</#if>
+			<tfoot>
+				<tr>
+					<td></td>
+					<td><form id="plform"><textarea style="height:60px;width: 99%" name="context" id="plcontext"></textarea></form></td>
+					<td><button onclick="pl()">评论&gt;&gt;</button></td>
+				</tr>
+			</tfoot>
+			</table>
+		</div>
+	</div>
+	<script>
+	function pl(){
+		$.ajax({url:'/oa/beiwanglu/pl/${(po.id)!}',data:$("#plform").serialize(),success:function(json){
+			if(json.success){
+				$("#pltbody").append("<tr><td>${(Login_User.fullname)!}</td><td colspan=2>"+$("#plcontext").val()+"</td></tr>");
+				$("#plcontext").val("");
+			}
+			$.message.alert("操作提示",json.msg,"info");
+		}});
+	}
+	</script>

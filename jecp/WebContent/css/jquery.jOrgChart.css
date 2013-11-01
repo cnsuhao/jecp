@@ -1,0 +1,85 @@
+/* Basic styling */
+/* Draw the lines */
+.jOrgChart .line {
+  height                : 20px;
+  width                 : 4px;
+}
+
+.jOrgChart .down {
+  background-color 	: #5E88B2;	
+  margin 				: 0px auto;
+}
+
+.jOrgChart .top {
+  border-top          : 3px solid #5E88B2;
+}
+
+.jOrgChart .left {
+  border-right          : 2px solid #5E88B2;
+}
+
+.jOrgChart .right {
+  border-left           : 2px solid #5E88B2;
+}
+
+/* node cell */
+.jOrgChart td {
+  text-align            : center;
+  vertical-align        : top;
+  padding               : 0;
+}
+
+/* The node */
+.jOrgChart .node {
+  display               : inline-block;
+  width                 : auto;
+  z-index 				: 10;
+  margin               : 0 2px;
+  padding:5px;
+}
+
+/* jQuery drag 'n drop */
+
+.drag-active {
+  border-style			: dotted !important;
+}
+
+.drop-hover {
+  border-style			: solid !important;
+  border-color 			: #E05E00 !important;
+}
+
+/* general */
+.clear {
+	clear: both;
+}
+/* list stuff */
+#org{
+	background-color 	: #5E88B2;
+	margin 				: 10px;
+	padding 			: 10px;
+}
+
+#show-list{
+	cursor 				: pointer;
+}
+
+/* Custom chart styling */
+.jOrgChart {
+  margin                : 10px;
+  padding               : 20px;
+}
+
+/* Custom node styling */
+.jOrgChart .node {
+	font-size 			: 14px;
+	border-radius 		: 8px;
+	border 				: 3px solid #5E88B2;
+	-moz-border-radius 	: 8px;
+}
+	.node p{
+		font-family 	: tahoma;
+		font-size 		: 10px;
+		line-height 	: 11px;
+		padding 		: 2px;
+	}

@@ -1,0 +1,137 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var searchForm;
+	var datagrid;
+	var articleForm;
+	$(function() {
+		//查询列表	
+		searchForm = $('#searchForm').form();
+		datagrid = $('#datagrid').datagrid({
+			url:'Gonggao/dataGrid',
+			pagination:true,
+			pagePosition:'bottom',
+			rownumbers:true,
+			pageSize:20,
+			pageList:[ 20, 50, 100 ],
+			fit:true,
+			fitColumns:true,
+			nowrap:true,singleSelect:true,
+			border:false,
+			idField:'ID',
+			sortName:'',
+			sortOrder:'',
+			columns:[ [ {
+				title : '标题',
+				field : 'TITLE',
+				sortable : true,
+				formatter : function(v,row) {
+						return "<a href=\"javascript:view("+row.ID+",'"+v+"');\" title='"+v+"'>"+v+"</a>";
+				}
+			},{
+				field:'GLNAME',
+				title:'栏目',
+				sortable : true
+			},{
+				field:'FULLNAME',
+				title:'发布人',
+				sortable : true
+			},{
+				field:'FBDATE',
+				title:'发布时间',
+				sortable : true
+			},{
+					field:'STARTDATE',
+					title:'开始时间',
+					sortable : true
+			},{
+					field:'ENDDATE',
+					title:'结束时间',
+					sortable : true
+			},{
+				field:'SHOWCONT',
+				title:'阅读人数'
+			}] ],
+			onRowContextMenu:function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left:e.pageX,
+					top:e.pageY
+				});
+			}
+		});
+	});
+
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject(searchForm));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		searchForm.find('input').val('');
+	}
+	function view(id_,title){
+		if(id_==undefined){
+			var rows = datagrid.datagrid('getSelections');
+			if (rows.length == 1) {
+				id_=rows[0].ID;
+				title=rows[0].TITLE;
+			}else{
+				$.messager.alert('提示', '请选择一条记录！', 'error');
+				return;
+			}
+		}
+			$.messager.progress({
+				text:'数据加载中....',
+				interval:100
+			});
+			$('#Dialog_').dialog({
+			    title: '查看-'+title,   
+			    width: 800,   
+			    top:0, 
+			    cache: false,
+			    maximizable:true,
+			    resizable:true,
+			    href: '/oa/Gonggao/view/' + id_,   
+			    //modal: true,
+			    onLoad:function(){$.messager.progress('close');},
+				buttons:[ {
+					text:"关闭",
+					handler:function() {
+						$('#Dialog_').dialog('close');
+					}
+				}]
+			});   
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="north" border="false" title="搜索条件" collapsed="false"
+		style="height: 60px; overflow:hidden;" align="left">
+		<form id="searchForm">
+			<div  class="tableForm datagrid-toolbar" >
+			<table style="height: 100%;width: auto;">
+				<tr>
+					<td>标题</td>
+					<td><input name="title" style="width: 120px;"/></td>
+					<td>公告栏</td>
+					<td><input class="easyui-combobox" id="gglid" name="gglid"style="width: 80px;"
+						data-options="url:'/oa/gglan/combobox',valueField:'ID',textField:'NAME',panelHeight:'auto'"></td>
+					<td>发布时间</td>
+					<td><input name="startDate"class="easyui-datebox" size="10">-<input size="10" name="endDate"class="easyui-datebox" > </td>
+					<td><a href="javascript:void(0);" class="easyui-linkbutton"
+						iconCls="icon-search" onclick="_search();">查询</a><a
+						href="javascript:void(0);" class="easyui-linkbutton"
+						onclick="cleanSearch();">取消</a></td>
+				</tr>
+			</table>
+			</div>
+		</form>
+	</div>
+
+	<div region="center" border="false">
+		<table id="datagrid"></table>
+	</div>
+	
+	<div id="Dialog_"></div>
+</@layout>

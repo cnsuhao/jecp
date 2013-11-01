@@ -1,0 +1,67 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th>员工id</th>
+<td><input type="text" name="empid"class="easyui-validatebox" value="${(po.empid)!}"></td>
+<th><font color=red>*</font>员工编号</th>
+<td><input type="text" name="empsno"class="easyui-validatebox" value="${(po.empsno)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>员工姓名</th>
+<td><input type="text" name="empname"class="easyui-validatebox" value="${(po.empname)!}"data-options="required:true"></td>
+<th><font color=red>*</font>基本工资</th>
+<td><input type="text" name="jbgz"class="easyui-validatebox" value="${(po.jbgz)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>工作天数</th>
+<td><input type="text" name="gzts"class="easyui-validatebox" value="${(po.gzts)!}"data-options="required:true"></td>
+<th><font color=red>*</font>岗位工资</th>
+<td><input type="text" name="gwgz"class="easyui-validatebox" value="${(po.gwgz)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>餐贴</th>
+<td><input type="text" name="cantie"class="easyui-validatebox" value="${(po.cantie)!}"data-options="required:true"></td>
+<th><font color=red>*</font>交通补贴</th>
+<td><input type="text" name="jtbt"class="easyui-validatebox" value="${(po.jtbt)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>通讯补贴</th>
+<td><input type="text" name="txbt"class="easyui-validatebox" value="${(po.txbt)!}"data-options="required:true"></td>
+<th><font color=red>*</font>全勤</th>
+<td><input type="text" name="quanqin"class="easyui-validatebox" value="${(po.quanqin)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>请假</th>
+<td><input type="text" name="qjia"class="easyui-validatebox" value="${(po.qjia)!}"data-options="required:true"></td>
+<th><font color=red>*</font>社保</th>
+<td><input type="text" name="shebao"class="easyui-validatebox" value="${(po.shebao)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>住房公积金</th>
+<td><input type="text" name="gjj"class="easyui-validatebox" value="${(po.gjj)!}"data-options="required:true"></td>
+<th><font color=red>*</font>应发工资</th>
+<td><input type="text" name="yfgz"class="easyui-validatebox" value="${(po.yfgz)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>员工基金</th>
+<td><input type="text" name="ygjj"class="easyui-validatebox" value="${(po.ygjj)!}"data-options="required:true"></td>
+<th><font color=red>*</font>其他</th>
+<td><input type="text" name="qt"class="easyui-validatebox" value="${(po.qt)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>扣除合计</th>
+<td><input type="text" name="kchj"class="easyui-validatebox" value="${(po.kchj)!}"data-options="required:true"></td>
+<th><font color=red>*</font>实发工资</th>
+<td><input type="text" name="sfgz"class="easyui-validatebox" value="${(po.sfgz)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>月份</th>
+<td><input type="text" name="ym"class="easyui-validatebox" value="${(po.ym)!}"data-options="required:true"></td>
+<th><font color=red>*</font>上传时间</th>
+<td><input type="text" name="ctime"class="easyui-validatebox" value="${(po.ctime)!}"data-options="required:true"></td>
+</tr>
+<tr>
+</tr>
+</table>
+</form>

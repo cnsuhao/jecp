@@ -1,0 +1,104 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var datagrid;
+	$(function() {
+		datagrid = $('#kaoqing_datagrid').datagrid({
+			url : '/oa/kaoqing/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [20,50,100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'ID',
+			sortOrder : 'desc',
+			columns : [ [ 
+{title:'考勤日期',field:'KQRQ',width:150},
+{title:'签到时间',field:'QDTIME',width:150,formatter:function(v){return '${(kqset.starttime)!}'<v?"<font color=red><b>"+v+"</b></font>":v;}},
+{title:'签退时间',field:'QTTIME',width:150,formatter:function(v){return '${(kqset.endtime)!}'>v?"<font color=red><b>"+v+"</b></font>":v;}},
+{title:'签到IP',field:'QDIP',width:150},
+{title:'签退IP',field:'QTIP',width:150}] ],
+			toolbar : [ {
+			text : '查看',
+				iconCls : 'icon-eye',
+				handler : function() {
+					view();
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ]
+		});
+	});
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+	function view(id_,title){
+		if(id_==undefined){
+			var rows = datagrid.datagrid('getSelections');
+			if (rows.length == 1) {
+				id_=rows[0].ID;
+			}else{
+				$.messager.alert('提示', '请选择一条记录！', 'error');
+				return;
+			}
+			ooip(id_,title);
+		}
+	}
+	function ooip(id_,title){
+		$.messager.progress({text:'数据加载中....',interval:100});
+		$('#Dialog_').dialog({
+		    title: '查看-'+title,   
+		    width: 800,   
+		    top:0, 
+		    cache: false,
+		    maximizable:true,
+		    href: '/oa/kaoqing/view/' + id_,   
+		    modal: true,
+		    onLoad:function(){$.messager.progress('close');},
+			buttons:[ {
+				text:"关闭",
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		});   
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="north" border="false" title="搜索条件" collapsed="false"
+		style="overflow:hidden;height:60px;" align="left">
+		<form id="searchForm">
+			<input type="hidden" name="qryField" value="ID,UID,QDTIME,KQRQ,MONTH,DAY,YEAR,QDIP,">
+		   <div class="datagrid-toolbar" style="width:100%;">
+			<ul class="tableFormUL">
+				<li>考勤日期<input type="text" name="KQRQ_start" class="easyui-datebox">至<input type="text" name="KQRQ_end" class="easyui-datebox"></li>
+				<li><a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-search" onclick="_search();">查询</a>
+					<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">取消</a>
+				</li>
+			</ul>
+		  </div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="kaoqing_datagrid"></table>
+	</div>
+<div id="Dialog_"></div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="view();" iconCls="icon-sys">查看</div>
+	</div>
+</@layout>

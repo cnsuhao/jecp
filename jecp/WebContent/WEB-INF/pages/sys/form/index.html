@@ -1,0 +1,341 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var editRow = undefined;
+	var tableType=["","主表","从表"];
+	var tableTypeData=[{value:1,text:"主表"},{value:2,text:"从表"}];
+	var datagrid;
+	$(function() {
+		datagrid = $('#form_datagrid').datagrid({
+			url : '${root!}/sys/form/dataGrid',
+			title : '',
+			iconCls : 'icon-save',
+			pagination : true,
+			pageSize : 20,
+			pageList : [ 20, 50, 100 ],
+			fit : true,
+			fitColumns : true,
+			rownumbers : true,
+			nowrap : false,
+			border : false,
+			idField : 'ID',
+			sortName : 'ID',
+			sortOrder : 'desc',
+			frozenColumns : [ [ {
+				field:'ids',
+				checkbox:true,
+				formatter:function(value, row, index) {
+					return row.ID;
+				}
+			}] ],
+			columns : [ [ {
+			/*	title : '编号',
+				field : 'ID',
+				width : 150,
+				hidden:true
+			} ,{*/
+				field:'TNAME',
+				title:'表名',
+				sortable : true,
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			} ,{
+				field:'ZHUS',
+				title:'逻辑名',
+				sortable : true,
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			} ,{
+				field:'TBTYPE',
+				title:'表单类型',
+				sortable : true,
+				editor:{
+					type:'combobox',
+					options:{
+						valueField:'value',
+						textField:'text',
+						data:tableTypeData,
+						formatter:function(v) {
+							return v.text;
+						}
+					}
+				},
+				formatter:function(v) {
+					return tableType[v];
+				}
+			} ,{
+				field:'PACKAGE',
+				title:'包名',
+				sortable : true,
+				editor : {
+					type : 'validatebox',
+					options : {
+						required : true
+					}
+				}
+			},
+			{} ] ],
+			toolbar : [ {
+				text : '增加',
+				iconCls : 'icon-add',
+				handler : function() {
+					add();
+				}
+			}, '-', {
+				text : '删除',
+				iconCls : 'icon-remove',
+				handler : function() {
+					del();
+				}
+			}, '-', {
+				text : '编辑字段',
+				iconCls : 'icon-edit',
+				handler : function() {
+					edit();
+				}
+			}, '-', {
+				text : '生成代码',
+				iconCls : 'icon-gole',
+				handler : function() {
+					gCode();
+				}
+			}, '-', {
+				text : '保存',
+				iconCls : 'icon-save',
+				handler : function() {
+					if (editRow != undefined) {
+						datagrid.datagrid('endEdit', editRow);
+					}
+				}
+			}, '-', {
+				text : '取消编辑',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+					datagrid.datagrid('rejectChanges');
+					editRow = undefined;
+				}
+			}, '-', {
+				text : '取消选中',
+				iconCls : 'icon-undo',
+				handler : function() {
+					datagrid.datagrid('unselectAll');
+				}
+			}, '-' ],
+			onDblClickRow : function(rowIndex, rowData) {
+				if (editRow != undefined) {
+					datagrid.datagrid('endEdit', editRow);
+				}
+
+				if (editRow == undefined) {
+					datagrid.datagrid('beginEdit', rowIndex);
+					editRow = rowIndex;
+					datagrid.datagrid('unselectAll');
+				}
+			},
+			onAfterEdit : function(rowIndex, rowData, changes) {
+				var inserted = datagrid.datagrid('getChanges', 'inserted');
+				var updated = datagrid.datagrid('getChanges', 'updated');
+				if (inserted.length < 1 && updated.length < 1) {
+					editRow = undefined;
+					datagrid.datagrid('unselectAll');
+					return;
+				}
+
+				var url = '';
+				if (inserted.length > 0) {
+					url = '${root!}/sys/form/save';
+				}
+				if (updated.length > 0) {
+					url = '${root!}/sys/form/save';
+				}
+
+				$.ajax({
+					url : url,
+					data : rowData,
+					dataType : 'json',
+					success : function(r) {
+						if (r.success) {
+							datagrid.datagrid('acceptChanges');
+							$.messager.show({
+								msg : r.msg,
+								title : '成功'
+							});
+							editRow = undefined;
+							datagrid.datagrid('reload');
+						} else {
+							/*datagrid.datagrid('rejectChanges');*/
+							datagrid.datagrid('beginEdit', editRow);
+							$.messager.alert('错误', r.msg, 'error');
+						}
+						datagrid.datagrid('unselectAll');
+					}
+				});
+			},
+			onRowContextMenu : function(e, rowIndex, rowData) {
+				e.preventDefault();
+				$(this).datagrid('unselectAll');
+				$(this).datagrid('selectRow', rowIndex);
+				$('#menu').menu('show', {
+					left : e.pageX,
+					top : e.pageY
+				});
+			}
+		});
+	});
+
+	function add(){
+		if (editRow != undefined) {
+			datagrid.datagrid('endEdit', editRow);
+		}
+		if (editRow == undefined) {
+			datagrid.datagrid('unselectAll');
+			datagrid.datagrid('appendRow', {});
+			editRow = datagrid.datagrid('getRows').length - 1;
+			datagrid.datagrid('selectRow', editRow);
+			datagrid.datagrid('beginEdit', editRow);
+		}
+	}
+	function del() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url : '${root!}/sys/form/del',
+						data : {
+							ids : ids.join(',')
+						},
+						dataType : 'json',
+						success : function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									msg:r.msg,
+									title:'提示'
+								});
+								editRow = undefined;
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	function gCode() {
+		var rows = datagrid.datagrid('getSelections');
+		var ids = [];
+		if (rows.length ==1) {
+			$.messager.confirm('请确认', '您要对当前所选表生成代码？', function(r) {
+				if (r) {
+					$.ajax({
+						url : '${root!}/sys/form/generaterCode',
+						data : {
+							ID : rows[0].ID
+						},
+						dataType : 'json',
+						success : function(r) {
+							datagrid.datagrid('load');
+							datagrid.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									msg:r.msg,
+									title:'提示'
+								});
+								editRow = undefined;
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要处理的一条记录！', 'error');
+		}
+	}
+	function edit() {
+		var rows = datagrid.datagrid('getSelections');
+		if (rows.length == 1) {
+			$.messager.progress({
+				text:'数据加载中....',
+				interval:100
+			});
+			$('#Dialog_').dialog({
+			    title:"编辑字段",   
+			    cache: false,
+			    maximizable:true,
+			    resizable:true,
+			    width:800,
+			    height:500,
+			    top:0,
+			    //href: '${root!}/sys/formField/'+rows[0].ID,
+			    content:'<iframe src="${root!}/sys/formField/'+rows[0].ID+'" width="100%" height="98%"></iframe>',
+			    modal: false,
+			    onLoad:function(){$.messager.progress("close");},
+				buttons:[
+					{
+					text:"关闭",
+					iconCls:'icon-cancel',
+					handler:function() {
+						$('#Dialog_').dialog('close');
+					}
+				}]
+			}); 
+		} else {
+			$.messager.show({
+				msg : '请选择一项进行修改！',
+				title : '错误'
+			});
+		}
+	}
+	function _search() {
+		datagrid.datagrid('load', sy.serializeObject($("#searchForm")));
+	}
+	function cleanSearch() {
+		datagrid.datagrid('load', {});
+		$("#searchForm").find('input').val('');
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<div region="north" border="false" title="搜索条件" collapsed="false"
+		style="height: 60px; overflow:hidden;" align="left">
+		<form id="searchForm">
+		   <div class="datagrid-toolbar" style="width:100%;">
+			<ul class="tableFormUL">
+				<li>表名<input name="fieldname" style="width: 120px;"/></li>
+				<li>逻辑名<input name="fielddesc" style="width: 120px;"/></li>
+				<li><a href="javascript:void(0);" class="easyui-linkbutton" iconCls="icon-search" onclick="_search();">查询</a>
+					<a href="javascript:void(0);" class="easyui-linkbutton" onclick="cleanSearch();">取消</a>
+				</li>
+			</ul>
+		  </div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="form_datagrid"></table>
+	</div>
+	<div id="menu" class="easyui-menu" style="width:120px;display: none;">
+		<div onclick="add();" iconCls="icon-add">增加</div>
+		<div onclick="del();" iconCls="icon-remove">删除</div>
+		<div onclick="edit();" iconCls="icon-edit">编辑</div>
+	</div>
+	<div id="Dialog_"></div>
+</@layout>

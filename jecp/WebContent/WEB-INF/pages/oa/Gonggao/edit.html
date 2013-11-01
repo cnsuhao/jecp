@@ -1,0 +1,22 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>标题</th>
+<td><input type="text" name="TITLE" class="easyui-validatebox" value="${(po.title!)!}"  style='width:98%;' data-options="required:true"></td>
+</tr>
+<tr>
+<td>公告栏</td>
+<td><input class="easyui-combobox" id="gglid" name="gglid" value="${(po.gglid)!}"style="width: 80px;"data-options="url:'/oa/gglan/combobox',valueField:'ID',textField:'NAME',panelHeight:'auto'"></td></tr>
+<tr>
+<th><font color=red>*</font>有效时间</th>
+<td><input name="STARTDATE"class="easyui-datebox" required="required" value="${(po.startdate)!(now?string('yyyy-MM-dd'))}">-<input name="ENDDATE"class="easyui-datebox" value="${(po.enddate)!}"> </td>
+</tr>
+<tr>
+<th><font color=red>*</font>内容</th>
+<td>
+<textarea class="keditor easyui-validatebox" style="width:670px;height:300px;" data-options="required:true" name="CONTEXT">${(po.context!)!}</textarea>
+</td>
+</tr>
+</table>
+</form>

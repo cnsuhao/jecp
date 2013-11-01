@@ -1,0 +1,163 @@
+<form id="editForm" name="editForm" method="post">
+	<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+	<div id="tt" class="easyui-tabs" style="width: 786px; height: 450px;">
+		<div title="基本信息" style="padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th><font color=red>*</font>员工编号</th>
+					<td width="200px"><input type="text" name="userno"
+						class="easyui-validatebox" value="${(po.userno!)!}"
+						data-options="required:true"></td>
+					<td rowspan="4" colspan="2" width="50%">
+					<input type="hidden" value="${(po.photo!)!}" name="photo" id="photo">
+					<a href="<#if po?? && po.photo??>${(po.photo!)!}<#else>${root!}/img/man.gif</#if>" id='avatarImg_href' target="_blank">
+					<img height="110px" id="avatarImg" src="<#if po?? && po.photo??>${(po.photo!)!}<#else>${root!}/img/man.gif</#if>"/>
+					</a>
+						<br><div style="width:60px;border:1px;"><span id="upbtn"></span></div>
+					</td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>姓名</th>
+					<td><input type="text" name="fullname" class="easyui-validatebox" value="${(po.fullname!)!}"data-options="required:true"></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>姓名拼音</th>
+					<td><input type="text" name="fnamepy" class="easyui-validatebox" value="${(po.fnamepy!)!}"data-options="required:true"></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>角色</th>
+					<td><input type="text" name="roles" id="roles"></td>
+					<script>
+					$(function(){
+						$("#roles").combobox({
+							 required:true,   
+							 multiple:true,
+							 url:'${root!}/sys/role/combobox',valueField:'ID',textField:'CNAME',panelHeight:'auto'
+						});
+						$("#roles").combobox('setValues',[${roles!'1'}]);
+					});
+					</script>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>职位</th>
+					<td><input type="text" name="postid" value="${(po.postid!)!}" class="easyui-combotree" 
+data-options="url:'${root!}/sys/post/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto',required:true"></td>
+				<th><font color=red>*</font>部门</th>
+					<td>
+					<input class="easyui-combotree" id="partmentid" name="partmentid" value="${(po.partmentid!)!}"
+						data-options="url:'${root!}/sys/partment/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto',required:true">
+					</td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>籍贯</th>
+					<td><input id="hometown" class="easyui-combobox" name="hometown" value="${(po.hometown!)!1}"
+    data-options="valueField:'id',textField:'text',url:'${root!}/js/data/province.json',required:true" /></td>
+					<th><font color=red>*</font>民族</th>
+					<td><input id="nation" class="easyui-combobox" name="nation" value="${(po.nation!)!1}"
+    data-options="valueField:'id',textField:'text',url:'${root!}/js/data/nation.json',required:true" /></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>学历</th>
+					<td><input id="diploma" class="easyui-combobox" name="diploma" value="${(po.diploma!)!7}"
+    data-options="valueField:'id',textField:'text',url:'${root!}/js/data/diploma.json',required:true" />
+					</td>
+					<th><font color=red>*</font>身份证</th>
+					<td><input type="text" name="idcard" class="easyui-validatebox" value="${(po.idcard!)!}"data-options="required:true"></td>
+				</tr>
+				<tr>
+					<th>性别</th>
+					<td><select class="easyui-combobox" id="gender" name="gender"
+						data-options="panelHeight:'auto',value:'${(po.gender!)!'1'}'"><option value="1">男</option>
+							<option value='0'>女</option></select></td>
+					<th><font color=red>*</font>生日</th>
+					<td><input name="birthday" type="text" value="${(po.birthday!)!}" class="easyui-datebox" required="required"></input></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>入职时间</th>
+					<td><input name="worktime" type="text" value="${(po.worktime!)!}" class="easyui-datebox" required="required"></input></td>
+					<th>离职职时间</th>
+					<td><input name="dimissiontime" type="text" value="${(po.dimissiontime!)!}" class="easyui-datebox"></input></td>
+				</tr>
+				<tr>
+					<th>备注</th>
+					<td colspan="3"><textarea name="remark">${(po.remark!)!}</textarea></td>
+				</tr>
+			</table>
+		</div>
+		<div title="联系方式" style="overflow: auto; padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th>手机</th>
+					<td><input type="text" name="phone" class="easyui-validatebox" value="${(po.phone!)!}"data-options=""></td>
+					<th>电话</th>
+					<td><input type="text" name="telphone" class="easyui-validatebox" value="${(po.telphone!)!}"data-options=""></td>
+				</tr>
+				<tr><th>地址</th><td><input type="text" name="addr" value="${(po.addr)!}"></td>
+					<th>Email</th>
+					<td><input type="text" name="email" class="easyui-validatebox" value="${(po.email!)!}"></td>
+				</tr>
+				<tr>
+					<th>MSN</th>
+					<td><input type="text" name="msn" class="easyui-validatebox" value="${(po.msn!)!}"data-options=""></td>
+					<th>QQ</th>
+					<td><input type="text" name="qq" class="easyui-validatebox" value="${(po.qq!)!}"data-options=""></td>
+				</tr>
+			</table>
+		</div>
+		<div title="简历" style="padding:5px;">
+		<textarea name="resume" class="keditor" style="width:750px;height:400px;">${(po.resume)!}</textarea>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+	var swfu_= new SWFUpload({
+				upload_url: "${root}/file/swfup",
+				post_params: {"uid": ${(Login_User.id)!}},
+				//上传文件的名称
+                file_post_name: "filedata",
+				file_size_limit : "1 MB",
+				file_types : "*.jpg;*.png;*.jpeg'*.bmp",
+				file_types_description : "bmp,jpeg,jpg,png图片",
+				file_upload_limit :1,
+				swfupload_preload_handler : preLoad,
+				swfupload_load_failed_handler : loadFailed,
+				file_queue_error_handler : fileQueueError,
+				file_dialog_complete_handler : fileDialogComplete,
+				upload_progress_handler : uploadProgress,
+				upload_error_handler : uploadError,
+				upload_success_handler : function(f,data){
+					eval("var json="+data+";");
+					if(json.suc==true){
+						avatarImg.src=json.msg;
+						photo.value=json.msg;
+						avatarImg_href.href=json.msg;
+					}else{
+						alert(data.json);
+					}
+				},
+				upload_complete_handler : uploadComplete,
+				// Button Settings
+				button_image_url : "${root!}/img/SmallSpyGlassWithTransperancy_17x18.png",
+				button_placeholder_id : "upbtn",
+				button_width: 80,
+				button_height: 18,
+				button_text : '<span class="button">上传头像</span>',
+				button_text_style : '.button {font-size: 12pt; }',
+				button_text_top_padding: 0,
+				button_text_left_padding: 18,
+				button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+				button_cursor: SWFUpload.CURSOR.HAND,
+				// Flash Settings
+				flash_url : swfuploaddir+"/swfupload.swf",
+				flash9_url : swfuploaddir+"/swfupload_fp9.swf",
+
+				custom_settings : {
+				//	upload_target : "divFileProgressContainer",
+					thumbnail_height: 500,
+					thumbnail_width: 500,
+					thumbnail_quality: 100
+				},
+				// Debug Settings
+				debug: false
+			});
+</script>

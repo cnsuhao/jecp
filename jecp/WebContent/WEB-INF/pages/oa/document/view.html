@@ -1,0 +1,21 @@
+<table class="tableForm tableCss">
+<tr>
+<th>标题</th>
+<td colspan="3">${po.title!}</td>
+</tr>
+<tr>
+<th>文档分类</th>
+<td colspan="3"><input style="width:130px;" class="easyui-combotree"  readonly="readonly" value="${(po.doccateid!)!}"
+data-options="required:true,url:'${root!}/docCate/combotree',valueField:'ID',textField:'CNAME',panelHeight:'auto'"></td>
+</tr>
+<tr>
+<th>内容摘要</th>
+<td colspan="3">
+${po.summary!}
+</td>
+</tr>
+<tr>
+<th>创建时间</th><td>${po.ctime!}</td>
+<th>修改时间</th><td>${po.utime!}</td>
+</tr>
+</table>

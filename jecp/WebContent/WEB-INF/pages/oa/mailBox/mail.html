@@ -1,0 +1,44 @@
+<#include "../../inc/layout.html"><@layout>
+<script>
+var editor;
+$(function(){
+	editor=KindEditor.create('.keditor', {
+		themeType : 'default',
+		uploadJson : '${root!}/file/up',
+		fileManagerJson : '${root!}/file/manager',
+		allowFileManager : false
+	});
+});
+function submitForm(s){
+	var articleForm = $('#editForm').form({
+		url:'/oa/mailBox/'+s,
+		success:function(data) {
+			var json = $.parseJSON(data);
+			if (json && json.success) {
+				$.messager.alert('操作成功',json.msg,'info',function(){window.location.reload();});
+				$("#poid").val(json.obj);
+			} else {
+				$.messager.alert('操作失败',json.msg,'error');
+			}
+		}
+	});
+	editor.sync();//ajax提交时需要执行此方法
+	editor.sync();
+	articleForm.submit();
+}
+function save(){
+	submitForm('saveSet');
+}
+</script>
+</head>
+<body>
+<form>
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<input type="hidden" name="uid" value="${(po.uid)!}" >
+<input type="hidden" name="status" value="${(po.status)!}" >
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>昵称</th>
+<td><input type="text" name="cname" class="easyui-validatebox" value="${(po.cname)!}" data-options="required:true,validType:['length[1,30]']"></td>
+</form>
+</@layout>

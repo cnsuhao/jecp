@@ -1,0 +1,58 @@
+<#include '../../inc/_parame.html'/>
+<form id="editForm" name="editForm" method="post">
+	<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+	<input type="hidden" name="creater" value="${(po.creater)!Login_User.id}" >
+			<table class="tableForm tableCss">
+				<tr>
+					<th><font color=red>*</font>联系人姓名</th>
+					<td ><input type="text" name="uname" class="easyui-validatebox" value="${(po.uname)!}"data-options="required:true" style="width:99%;"></td>
+					<th>性别</th><td><input type="radio" name="sex" value="1" <#if ((po.sex)!0)==1>checked="checked"</#if>>男 <input type="radio" name="sex" value="0" <#if ((po.sex)!0)==0>checked="checked"</#if>>女</td>
+				</tr>
+				<tr>
+					<th>手机</th>
+					<td><input name="mobile" value="${(po.mobile)!}"></td>
+					<th>部门</th>
+					<td></td>
+				</tr>
+					<tr>
+					<th>QQ</th>
+					<td><input name="qq" value="${(po.qq)!}"></td>
+					<th>Email</th>
+					<td><input name="email" value="${(po.email)!}"></td>
+				</tr>
+				<tr>
+					<th>传真</th>
+					<td><input name="fax" value="${(po.fax)!}"></td>
+					<th>MSN</th>
+					<td><input name="msn" value="${(po.msn)!}"></td>
+				</tr>
+				<tr>
+					<th>工作电话</th>
+					<td><input name="worktel" value="${(po.worktel)!}"></td>
+					<th>生日</th>
+					<td><input name="birthday"class="easyui-datebox"  value="${(po.birthday)!(now?string('yyyy-MM-dd'))}"></td>
+				</tr>
+				<tr>
+					<th>主联系人</th>
+					<td><input type="radio" name="ismain" value="1" <#if (po.ismain)!0==1>checked="checked"</#if>>是 <input type="radio" name="ismain" value="0" <#if (po.ismain)!0==0>checked="checked"</#if>>否</td></td>
+					<th>家庭地址</th>
+					<td><input name="homeaddr" value="${(po.homeaddr)!}"></td>
+				</tr>
+				<tr>
+					<th>爱好</th>
+					<td colspan="3"><input name="" value="${(po.aihao)!}"></td>
+				</tr>
+				<tr>
+					<th>血型</th>
+					<td><#list xuexing as xx><label><input type="radio" name="xuexing" value="${xx_index}"<#if (po.xuexing)==xx>checked="checked"</#if>>${xx}<#if xx_index!=0>型</#if></#list></label></td>
+					<th>星座</th>
+					<td></td>
+				</tr>
+				<tr>
+					<th><font color=red>*</font>备注</th>
+					<td colspan="3"><textarea name="remark" style="width:100%;height:100px;"required="required">${(po.remark)!}</textarea></td>
+				</tr>
+			</table>
+</form>
+<script type="text/javascript">
+</script>

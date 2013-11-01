@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	#多域共享
+	<domain value="" />
+	#单房间最大人数
+	<maxuser value="100" />
+</config> 

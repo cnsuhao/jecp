@@ -1,0 +1,84 @@
+<input type="hidden" name="id" value="${(po.id)!}" id="poid_">
+	<div id="tt" class="easyui-tabs" style="width:786px;height:450px;">
+		<div title="基本信息" style="padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th>员工编号</th>
+					<td width="200px">${(po.userno!)!}</td>
+					<td rowspan="4" colspan="2" width="50%">
+					<a href="<#if po?? && po.photo??>${(po.photo!)!}<#else>${root!}/img/man.gif</#if>" target="_blank">
+					<img height="110px" id="avatarImg" src="<#if po?? && po.photo??>${(po.photo!)!}<#else>${root!}/img/man.gif</#if>"/></a>
+					</td>
+				</tr>
+				<tr>
+					<th>姓名</th>
+					<td>${(po.fullname!)!}</td>
+				</tr>
+				<tr>
+					<th>姓名拼音</th>
+					<td>${(po.fnamepy!)!}</td>
+				</tr>
+				<tr>
+				<th>部门</th>
+					<td>${(po.partmentid!)!}</td>
+				</tr>
+				<th>角色</th>
+					<td>${(po.partmentid!)!}</td>
+				<th>职位</th>
+					<td>${(po.postid!)!}</td>
+				</tr>
+				<tr>
+					<th>籍贯</th>
+					<td>${(JsonData.get("area").get(po.hometown!0))!}${po.hometown}</td>
+					<th>民族</th>
+					<td>${(JsonData.get("nation").get(po.nation!0))!}</td>
+				</tr>
+				<tr>
+					<th>学历</th>
+					<td>${(JsonData.get("diploma").get(po.diploma!0))!}${po.diploma }
+					</td>
+					<th>身份证</th>
+					<td>${(po.idcard!)!}</td>
+				</tr>
+				<tr>
+					<th>性别</th>
+					<td><#if po.gender=='0'>女<#else>男</#if></td>
+					<th>生日</th>
+					<td>${(po.birthday!)!}</td>
+				</tr>
+				<tr>
+					<th>入职时间</th>
+					<td>${(po.worktime!)!}</td>
+					<th>离职职时间</th>
+					<td>${(po.dimissiontime!)!}</td>
+				</tr>
+				<tr>
+					<th>备注</th>
+					<td colspan="3">${(po.remark!)!}</td>
+				</tr>
+			</table>
+		</div>
+		<div title="联系方式" style="overflow: auto; padding:5px;">
+			<table class="tableForm tableCss">
+				<tr>
+					<th>手机</th>
+					<td>${(po.phone!)!}</td>
+					<th>电话</th>
+					<td>${(po.telphone!)!}</td>
+				</tr>
+				<tr><th>地址</th><td>${(po.addr)!}</td>
+					<th>Email</th>
+					<td>${(po.email!)!}</td>
+				</tr>
+				<tr>
+					<th>MSN</th>
+					<td>${(po.msn!)!}</td>
+					<th>QQ</th>
+					<td>${(po.qq!)!}</td>
+				</tr>
+			</table>
+		</div>
+		<div title="简历" style="padding:5px;">
+		<div style="width:750px;height:400px;">${(po.resume)!}</div>
+		</div>
+	</div>

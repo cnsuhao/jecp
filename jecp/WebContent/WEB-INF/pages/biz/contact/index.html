@@ -1,0 +1,298 @@
+<#include "../../inc/layout.html"><@layout>
+<script type="text/javascript" charset="utf-8">
+	var searchForm1;
+	var searchForm2;
+	var searchForm3;
+	var searchForm4;
+	var datagrid1;
+	var datagrid2;
+	var datagrid3;
+	var datagrid4;
+	var articleForm;
+	<#list 1..4 as t>
+	var cols${t}=[ [ {title : '姓名',field : 'UNAME',width:200,
+		formatter : function(v,row) {
+			return "<a href=\"javascript:view(,"+row.ID+",'"+v+"');\" title='"+v+"'>"+v+"</a>";
+		}
+	<#if t==3>
+	},{field:'PNAME',title:'厂商',sortable : true,width:200},{
+	},{field:'ISMAIN',title:'主联系人',sortable : true,width:200
+		,formatter : function(v,row) {
+			var tt=["否","是"];
+			return tt[v];
+		}
+	</#if>
+	<#if t==4>
+	},{field:'PNAME',title:'客户',sortable : true,width:200},{
+	},{field:'ISMAIN',title:'主联系人',sortable : true,width:200
+		,formatter : function(v,row) {
+			var tt=["否","是"];
+			return tt[v];
+		}
+	</#if>
+	},{field:'MOBLIE',title:'手机',sortable : true,width:200},{
+	},{field:'WORKTEL',title:'电话',sortable : true,width:200},{
+	},{field:'MOBLIE',title:'传真',sortable : true,width:200},{
+	},{field:'QQ',title:'QQ',sortable : true,width:200},{
+	},{field:'MSN',title:'MSN',sortable : true,width:200},{
+	},{field:'EMAIL',title:'Email',sortable : true,width:200},{
+		field:'CTIME',title:'创建时间',width:200,sortable : true
+	}] ];
+	</#list>
+	$(function() {
+		<#list 1..4 as t>
+		//查询列表	
+		<#if t==1>
+		searchForm${t} = $('#searchForm${t}').form();
+		datagrid${t} = $('#datagrid${t}').datagrid({
+			url:'/biz/contact/dataGrid/${t}',
+			pagination:true,
+			pagePosition:'bottom',
+			rownumbers:true,
+			pageSize:20,
+			pageList:[ 20, 50, 100 ],
+			fit:true,
+			fitColumns:true,singleSelect:true,
+			nowrap:true,
+			border:false,
+			idField:'ID',
+			sortName:'',
+			sortOrder:'',
+			columns:cols1,
+			toolbar:[
+			{
+				text:'查看',
+				iconCls:'icon-eye',
+				handler:function() {
+					view1();
+				}
+			},{
+				text:'增加',
+				iconCls:'icon-add',
+				handler:function() {
+					add();
+				}
+			}, '-',
+			{
+				text:'删除',
+				iconCls:'icon-remove',
+				handler:function() {
+					del();
+				}
+			}, '-', {
+				text:'修改',
+				iconCls:'icon-edit',
+				handler:function() {
+					edit();
+				}
+			}, '-',
+			{
+				text:'取消选中',
+				iconCls:'icon-undo',
+				handler:function() {
+					datagrid1.datagrid('unselectAll');
+				}
+			}, '-' ]
+		});<#else>
+		datagrid${t} = $('#datagrid${t}').datagrid({
+			url:'/biz/contact/dataGrid/${t}',
+			pagination:true,
+			pagePosition:'bottom',
+			rownumbers:true,
+			pageSize:20,
+			pageList:[ 20, 50, 100 ],
+			fit:true,
+			fitColumns:true,singleSelect:true,
+			nowrap:true,
+			border:false,
+			idField:'ID',
+			sortName:'',
+			sortOrder:'',
+			columns:cols${t},
+			toolbar:[
+			{
+			  text:'查看',
+			  iconCls:'icon-eye',
+			  handler:function() {
+			  view${t}();
+			  }}]
+		});
+		</#if>
+		</#list>
+	});
+<#list 1..4 as t>
+	function _search${t}() {
+		datagrid${t}.datagrid('load', sy.serializeObject(searchForm${t}));
+	}
+	function cleanSearch${t}() {
+		datagrid${t}.datagrid('load', {});
+		searchForm${t}.find('input').val('');
+	}
+</#list>
+	function del() {
+		var rows = datagrid1.datagrid('getSelections');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('请确认', '您要删除当前所选项目？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].ID);
+					}
+					$.ajax({
+						url:'/biz/contact/del',
+						data:{
+							ids:ids.join(',')
+						},
+						dataType:'json',
+						success:function(r) {
+							datagrid1.datagrid('load');
+							datagrid1.datagrid('unselectAll');
+							if (r.success) {
+								$.messager.show({
+									title:'提示',
+									msg:'删除成功！'
+								});
+							} else {
+								$.messager.alert("操作错误",r.msg,'error');
+							}
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('提示', '请选择要删除的记录！', 'error');
+		}
+	}
+	var editor;
+	function add(id_) {
+		$.messager.progress({
+			text:'数据加载中....',
+			interval:100
+		});
+		$('#Dialog_').dialog({
+		    title:(id_==undefined?"新增":"编辑")+"联系人",   
+		    cache: false,
+		    maximizable:false,
+		    resizable:false,
+		    width:800,
+		    top:0,
+		    href: '/biz/contact/edit/'+(id_==undefined?'':id_),   
+		    modal: false,
+		    onLoad:function(){$.messager.progress('close');},
+			buttons:[ {
+				text:'保存',
+				iconCls:'icon-save',
+				handler:function() {
+					articleForm = $('#editForm').form({
+						url:'/biz/contact/save/',
+						success:function(data) {
+							var json = $.parseJSON(data);
+							if (json && json.success) {
+								$.messager.show({
+									title:'成功',
+									msg:json.msg
+								});
+								datagrid1.datagrid('reload');
+								$("#poid").val(json.obj);
+							} else {
+								$.messager.show({
+									title:'失败',
+									msg:'操作失败！'
+								});
+							}
+						}
+					});
+					articleForm.submit();
+					}
+				},
+				{
+				text:"关闭",
+				iconCls:'icon-cancel',
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		}); 
+	}
+	function edit() {
+		var rows = datagrid1.datagrid('getSelections');
+		if (rows.length == 1) {
+			add(rows[0].ID);
+		} else {
+			$.messager.alert('提示', '请选择一条记录！', 'error');
+		}
+	}
+	<#list 1..4 as t>
+	function view${t}(id_,title){
+		if(id_==undefined){
+			var rows = datagrid${t}.datagrid('getSelections');
+			if (rows.length == 1) {
+				id_=rows[0].ID;
+				title=rows[0].TITLE;
+			}else{
+				$.messager.alert('提示', '请选择一条记录！', 'error');
+				return;
+			}
+			ooip(id_);
+		}
+	}
+	</#list>
+	function ooip(id_){
+		$.messager.progress({text:'数据加载中....',interval:100});
+		$('#Dialog_').dialog({
+		    title: '查看-'+title,   
+		    width: 800,   
+		    top:0, 
+		    cache: false,
+		    maximizable:true,
+		    href: '/biz/contact/view/' + id_,   
+		    modal: true,
+		    onLoad:function(){$.messager.progress('close');},
+			buttons:[ {
+				text:"关闭",
+				handler:function() {
+					$('#Dialog_').dialog('close');
+				}
+			}]
+		});   
+	}
+</script>
+</head>
+<body class="easyui-layout" >
+<div class="easyui-tabs"  region="center" border="false" >
+<#list 1..4 as t>
+<div title="<#if t==1>我的<#elseif t==2>公司<#elseif t==3>厂商<#elseif t==4>客户</#if>联系人"
+style="padding:1px;" class="easyui-layout" >
+	<div region="north" border="false" title="搜索条件" collapsed="false" id="sto${t}" style="height: 60px; overflow:hidden;" align="left">
+		<form id="searchForm${t}"">
+		<input type="hidden" name="qryField" value="uname,sex,mobile,email,worktel">
+		<div class="tableForm datagrid-toolbar" style="height: 100%;width:100%;">
+			<table style="height: 100%;width: auto;">
+				<tr>
+					<td>姓名</td>
+					<td><input name="uname" style="width: 120px;"/></td>
+					<td>性别</td>
+					<td><select name="sex"><option value=""></option><option value="1">男</option><option value="0">女</option></select></td>
+					<td>手机</td>
+					<td><input name="mobile" style="width: 120px;"/></td>
+					<td>电话</td>
+					<td><input name="worktel" style="width: 120px;"/></td>
+					<td>Email</td>
+					<td><input name="email" style="width: 120px;"/></td>
+					<td><a href="javascript:void(0);" class="easyui-linkbutton"
+						iconCls="icon-search" onclick="_search${t}"();">查询</a><a
+						href="javascript:void(0);" class="easyui-linkbutton"
+						onclick="cleanSearch${t}"();">取消</a></td>
+				</tr>
+			</table>
+		</div>
+		</form>
+	</div>
+	<div region="center" border="false">
+		<table id="datagrid${t}" ></table>
+	</div>
+</div>
+</#list>
+</div>
+	<div id="Dialog_"></div>
+</@layout>

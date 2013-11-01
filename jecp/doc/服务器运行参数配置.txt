@@ -1,0 +1,5 @@
+jvm 内存：
+-Xms256M
+-Xmx512M
+-XX:MaxNewSize=256m 
+-XX:MaxPermSize=256m

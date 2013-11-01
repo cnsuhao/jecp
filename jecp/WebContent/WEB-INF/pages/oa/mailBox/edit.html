@@ -1,0 +1,49 @@
+<form method="post" id="editForm" name="editForm">
+<input type="hidden" name="id" value="${(po.id)!}" id="poid">
+<table class="tableForm tableCss">
+<tr>
+<th><font color=red>*</font>标题</th>
+<td><input type="text" name="title"class="easyui-validatebox" value="${(po.title)!}"data-options="required:true"></td>
+<th><font color=red>*</font>内容</th>
+<td><input type="text" name="content"class="easyui-validatebox" value="${(po.content)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>uid</th>
+<td><input type="text" name="uid"class="easyui-validatebox" value="${(po.uid)!}"data-options="required:true"></td>
+<th><font color=red>*</font>邮箱设置id</th>
+<td><input type="text" name="setid"class="easyui-validatebox" value="${(po.setid)!}"data-options="required:true"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>发件人</th>
+<td><input type="text" name="mailfrom"class="easyui-validatebox" value="${(po.mailfrom)!}"></td>
+<th><font color=red>*</font>收件人</th>
+<td><input type="text" name="mailto"class="easyui-validatebox" value="${(po.mailto)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>抄送人</th>
+<td><input type="text" name="bcc"class="easyui-validatebox" value="${(po.bcc)!}"></td>
+<th><font color=red>*</font>密抄</th>
+<td><input type="text" name="cc"class="easyui-validatebox" value="${(po.cc)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>是否新邮件</th>
+<td><input type="text" name="isnew"class="easyui-validatebox" value="${(po.isnew)!}"></td>
+<th><font color=red>*</font>邮件日期时间</th>
+<td><input type="text" name="maildate"class="easyui-validatebox" value="${(po.maildate)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>文件夹</th>
+<td><input type="text" name="box"class="easyui-validatebox" value="${(po.box)!}"data-options="required:true"></td>
+<th><font color=red>*</font>attachment</th>
+<td><input type="text" name="attachment"class="easyui-validatebox" value="${(po.attachment)!}"></td>
+</tr>
+<tr>
+<th><font color=red>*</font>是否有附件</th>
+<td><input type="text" name="hasattach"class="easyui-validatebox" value="${(po.hasattach)!}"></td>
+<th><font color=red>*</font>是否回复</th>
+<td><input type="text" name="replysign"class="easyui-validatebox" value="${(po.replysign)!}"></td>
+</tr>
+<tr>
+</tr>
+</table>
+</form>
