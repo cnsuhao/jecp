@@ -13,7 +13,7 @@ UI框架：Kindedit+easyui
  2)修改数据库配置文件，文件是在/confing/config.properties文件中修改。
  3)运行easyjfoa.sql脚本。
  4)tomcat部署项目。说明，此有多种配置方式。具体请依据个人智商而定。
- 二、运行
+二、运行
   浏览器打开http://IP:端口/path名称/
   默认密码为123456。密码采用md5加密。
   </pre>
