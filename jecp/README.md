@@ -1,6 +1,6 @@
 <h2>JECP</h2><br>
 <pre>
-使用的框架为：JFinal+activiti+spring+mybaties
+使用的框架为：JFinal+Jasperreport+activiti+spring+mybaties
 UI框架：Kindedit+easyui
 数据库设计插件:ERMaster
 数据库:mysql
