@@ -1,0 +1,8 @@
+报表模版
+报表模版名称包含SQL时：
+	需要外部执行sql，再将数据源导入到模版中：
+	 此目录下有与模版名对应的数据源名称及对应的SQL
+	      如：模版名次为ireportSQL.jasper 则 sql对应的文件名为 ireportSQL.sql
+	          ireportSQL.sql文件格式如下：
+	          报表中的数据源名=myBatis对应的查询ID。
+	          如：datasource1=select1
