@@ -27,6 +27,7 @@ import com.jfinal.plugin.spring.SpringPlugin;
  *2013-6-5
  */
 public class JFWebConfig extends JFinalConfig {
+    public static DruidPlugin druidPlugin;
 	/**
 	 * 配置常量
 	 */
@@ -54,7 +55,7 @@ public class JFWebConfig extends JFinalConfig {
 	public void configPlugin(Plugins me) {
 		me.add(new EhCachePlugin());
 		// 配置数据库连接池插件
-		DruidPlugin druidPlugin = new DruidPlugin(PropertiesContent.get("jdbc.url"),
+		druidPlugin = new DruidPlugin(PropertiesContent.get("jdbc.url"),
 												  PropertiesContent.get("jdbc.username"),
 												  PropertiesContent.get("jdbc.password"),
 												  PropertiesContent.get("jdbc.driver"));
